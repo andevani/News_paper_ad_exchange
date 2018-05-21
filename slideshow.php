@@ -2,6 +2,10 @@
 <head>
 <title> News Paper Advertisement Images </title>
 <link rel="stylesheet" type="text/css" href="slideshow_style.css">
+<script>
+document.cookie = "id = 1";
+</script>
+
 <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
 
 <?php
@@ -19,9 +23,10 @@ $height = [];
 $width = [];
 $json = [];
 
-$_id = "0";
 
-//$_id = $_COOKIE['id'];
+//$_id = "0";
+
+$_id= $_COOKIE['id'];
 
 
 $uniqid = $_GET['uniqid'];
@@ -72,7 +77,7 @@ mysqli_close($conn);
 
 
   <script type="text/javascript">
-  document.cookie = "id = 1";
+  //document.cookie = "id = 1";
   $(document).ready(function(){
    $( "#prev_image" ).click(function(){
     prev();
@@ -89,7 +94,7 @@ mysqli_close($conn);
   var height = <?php echo json_encode($height); ?>;
   var width = <?php echo json_encode($width); ?>;
   var images = <?php echo json_encode($json); ?>;
-  document.cookie = "id = 1";
+  //document.cookie = "id = 1";
 
 
   function prev()
@@ -165,7 +170,7 @@ mysqli_close($conn);
 	}
 
     }
-	document.cookie = "id = " + next_val;
+    document.cookie = "id = " + next_val;
     $( '#slideshow_image' ).attr( 'src' , 'images/'+images[next_val]);
     document.getElementById( "img_no" ).value = next_val;
     document.getElementById("height").innerHTML = height[next_val];
@@ -245,7 +250,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
   //echo "$query1";
   $result = mysqli_query($conn,$query1);
 
-  //echo $result;
+  //print_r($result);
   //echo "ankir..";
   if(mysqli_num_rows($result) < 1)
   {
@@ -269,7 +274,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
   //echo $query;
       mysqli_query($conn, $query) or die(mysqli_error($conn));
   }
+  //echo $query;
   mysqli_close($conn);
+
+  $i1 = $i2 = $i3 = $i4 = '';
 
 }
 //mysqli_close($conn);
@@ -277,6 +285,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	<input type="text" style="display:none" id="hiddenVal" value='1' />
 	<br>
+
+	<?php
+		$_id= $_COOKIE['id'];
+//echo $_id;
+	?>
 
 	<table align="center" cellspacing='5' cellpadding='5'  border='0' width="1000" frame="box" style="background-color: #ffffff;">
  
@@ -287,12 +300,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 				 <div id="slide_cont">
 				  <img src="e.png" id="slideshow_image" height='200' width='200'>
 				 </div>
-				 <div align="center">
-
-					<?php
-					//$_id = "1";
-					$_id= $_COOKIE['id'];
-					?>
+				 <div a
 
 					<h4>
 					Height :

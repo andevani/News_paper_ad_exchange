@@ -30,8 +30,9 @@ class ShapeDetector:
 			# a square will have an aspect ratio that is approximately
 			# equal to one, otherwise, the shape is a rectangle
 			#print ("###########ankur...w and h.."+str(w)+",,"+str(h))
-			if (w * h) > 20 and (w * h) < 500000000:
-				shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
+			if (w * h) > 3000 and (w * h) < 500000000:
+				#shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
+				shape = "square"
 				return shape, x, y, w, h
 			else:
 				return ("shape",1,1,1,1)
