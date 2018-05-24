@@ -73,7 +73,7 @@ $(function(){
     ctx.fillStyle="rgba(255, 0, 0, 0)";
     ctx.globalAlpha = 1;
     ctx.strokeStyle="red";
-    ctx.lineWidth=4;
+    ctx.lineWidth=5;
 
     var modeName="square";
 
