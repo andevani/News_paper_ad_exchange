@@ -90,8 +90,8 @@ print ("ankur..")
 img_hsv=cv2.cvtColor(resized, cv2.COLOR_BGR2HSV)
 
 # lower mask (0-10)
-lower_red = np.array([0,50,50])
-upper_red = np.array([2,255,255])
+lower_red = np.array([0,200,200])
+upper_red = np.array([1,255,255])
 mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
 
 # upper mask (170-180)
