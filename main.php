@@ -184,15 +184,9 @@
         	Newspaper :
         </td>
         <td width="500">
-        	<input list="newspaper" name="newspaper" />
-			<datalist id="newspaper">
-			  <option value="Gujarat Samachar">
-			</datalist>
-			
-			<div id="e_newspaper"></div>
-			
-        </td>
-	</tr>
+        	<select list="newspaper" name="newspaper" style="width:220px;"/>
+			  <option> Gujarat Samachar	</option>
+			</select>
 
 	<tr>
     	<td align="right" valign="top" width="500">
@@ -200,7 +194,7 @@
         </td>
         <td width="500">
 
-		<input type='text' id="datepicker" name="datepicker" />
+		<input type='text' id="datepicker" name="datepicker" style="width:220px;"/>
 
         </td>
 
@@ -211,14 +205,7 @@
         	Page No :
         </td>
         <td width="500">
-        	<input list="pageno" name="pageno" />
-			<datalist id="pageno">
-			  <option value="1">
-			  <option value="2">
-			  <option value="3">
-			  <option value="4">
-			  <option value="5">
-			</datalist>
+        	<input type="text" name="pageno" id="pageno" style="width:220px;"/>
         </td>
 	</tr>
 
@@ -228,21 +215,20 @@
         	Edition :
         </td>
         <td width="500">
-        	<input list="edition" name="edition" />
-			<datalist id="edition">
-			  <option value="AHM">
-			  <option value="BRD">
-			  <option value="SRT">
-			  <option value="RAJ">
-			  <option value="BHV">
-			  <option value="BHJ">
-			  <option value="MUM">
-			  <option value="RaviPurti">
-			  <option value="Shatdal">
-			  <option value="Chitralok">
-			  <option value="Dharmalok">
-			  <option value="Zagmag">
-			  <option value="Sahiyar">
+        	<select list="edition" name="edition" id="edition" style="width:220px;"/>
+			  <option> AHM </option>
+			  <option> BRD </option>
+			  <option> SRT </option>
+			  <option> RAJ </option>
+			  <option> BHV </option>
+			  <option> BHJ </option>
+			  <option> MUM </option>
+			  <option> RaviPurti </option>
+			  <option> Shatdal </option>
+			  <option> Chitralok </option>
+			  <option> Dharmalok </option>
+			  <option> Zagmag </option>
+			  <option> Sahiyar </option>
 			</datalist>
 			
 			<div id="e_edition"></div>
@@ -255,18 +241,17 @@
         	Section :
         </td>
         <td width="500">
-        	<input list="section" name="section" />
-			<datalist id="section">
-			  <option value="Main">
-			  <option value="GSPlus">
-			  <option value="KhedaAnand">
-			  <option value="Gandhinagar">
-			  <option value="Surendranagar">
-			  <option value="Sabarkantha">
-			  <option value="Mehsana">
-			  <option value="BharuchPanchmahal">
-			  <option value="VapiValsad">
-			  <option value="Magazine">
+        	<select list="section" name="section" id="section" style="width:220px;"/>
+			  <option> Main </option>
+			  <option> GSPlus </option>
+			  <option> KhedaAnand </option>
+			  <option> Gandhinagar </option>
+			  <option> Surendranagar </option>
+			  <option> Sabarkantha </option>
+			  <option> Mehsana </option>
+			  <option> BharuchPanchmahal </option>
+			  <option> VapiValsad </option>
+			  <option> Magazine </option>
 			</datalist>
         </td>
 	</tr>
@@ -304,4 +289,5 @@
 </div>
 
 </html>
+
 

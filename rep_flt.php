@@ -59,14 +59,9 @@ require_once('datepicker.php');
         	Select Newspaper :
         </td>
         <td width="500">
-        	<input list="newspaper" name="newspaper" />
-			<datalist id="newspaper">
-			  <option value="Gujarat Samachar">
-			  <option value="Divyabhaskar">
-			  <option value="Sandesh">
-			  <option value="Times of India">
-			  <option value="Sanj Samachar">
-			</datalist>
+        	<select list="newspaper" name="newspaper" style="width:220px;"/>
+			  <option> Gujarat Samachar	</option>
+			</select>
         </td>
 	</tr>
 
@@ -76,7 +71,7 @@ require_once('datepicker.php');
         </td>
         <td width="500">
 
-	<input type='text' id="datepicker" name="datepicker" />
+	<input type='text' id="datepicker" name="datepicker" style="width:220px;"/>
         </td>
 
 	</tr>
@@ -86,29 +81,71 @@ require_once('datepicker.php');
         	Page No :
         </td>
         <td width="500">
-        	<input list="pageno" name="pageno" />
-			<datalist id="pageno">
-			  <option value="1">
-			  <option value="2">
-			  <option value="3">
-			  <option value="4">
-			  <option value="5">
+        	<input type="text" name="pageno" id="pageno" style="width:220px;"/>
+        </td>
+	</tr>
+
+	<tr>
+    	<td align="right" valign="top" width="500">
+        	Edition :
+        </td>
+        <td width="500">
+        	<select list="edition" name="edition" id="edition" style="width:220px;"/>
+			  <option> AHM </option>
+			  <option> BRD </option>
+			  <option> SRT </option>
+			  <option> RAJ </option>
+			  <option> BHV </option>
+			  <option> BHJ </option>
+			  <option> MUM </option>
+			  <option> RaviPurti </option>
+			  <option> Shatdal </option>
+			  <option> Chitralok </option>
+			  <option> Dharmalok </option>
+			  <option> Zagmag </option>
+			  <option> Sahiyar </option>
+			</datalist>
+			
+			<div id="e_edition"></div>
+			
+        </td>
+	</tr>
+	
+	<tr>
+    	<td align="right" valign="top" width="500">
+        	Section :
+        </td>
+        <td width="500">
+        	<select list="section" name="section" id="section" style="width:220px;"/>
+			  <option> Main </option>
+			  <option> GSPlus </option>
+			  <option> KhedaAnand </option>
+			  <option> Gandhinagar </option>
+			  <option> Surendranagar </option>
+			  <option> Sabarkantha </option>
+			  <option> Mehsana </option>
+			  <option> BharuchPanchmahal </option>
+			  <option> VapiValsad </option>
+			  <option> Magazine </option>
 			</datalist>
         </td>
 	</tr>
-
+	
 	<tr>
     	<td align="right" width="100">
-        	Input 1 :
+        	Advertise/News :
         </td>
         <td width="100">
-        	<input type="text" name="input1" id="input1" size="30" value="" />
+        	<select name="input1" id="input1" style="width:220px;">
+			  <option value="advertisement">Advertisement</option>
+			  <option value="news">News</option>
+			</select>
         </td>
 	</tr>
 
 	<tr>
     	<td align="right" width="100">
-        	Input 2 :
+        	Advertiser :
         </td>
         <td width="100">
         	<input type="text" name="input2" id="input2" size="30" value="" />
@@ -151,3 +188,4 @@ require_once('datepicker.php');
 
 </body>
 </html>
+

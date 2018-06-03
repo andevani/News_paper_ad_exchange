@@ -53,6 +53,7 @@ while($row = mysqli_fetch_assoc($retval)){
 //print_r($width);
 mysqli_close($conn);
 
+$i1 = $i2 = $i3 = $i4 = '';
 
 ?>
 
@@ -125,18 +126,18 @@ mysqli_close($conn);
         dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
       {
-      //  alert(data);
         if (data == null){
-        document.getElementById( "input1" ).value = "";
-        document.getElementById( "input2" ).value = "";
-        document.getElementById( "input3" ).value = "";
-        document.getElementById( "input4" ).value = "";
+			document.getElementById( "input2" ).value = "";
+			document.getElementById( "input3" ).value = "";
+			document.getElementById( "input4" ).value = "";
         }
         else{
-         document.getElementById( "input1" ).value = data[1];
-         document.getElementById( "input2" ).value = data[2];
-        document.getElementById( "input3" ).value = data[3];
-        document.getElementById( "input4" ).value = data[4];
+			//var input1 = document.form.input1;
+			//input1[data[1]].checked = true;
+			$("input[name=input1][value="+data[1]+"]").attr('checked', true);
+			document.getElementById( "input2" ).value = data[2];
+			document.getElementById( "input3" ).value = data[3];
+			document.getElementById( "input4" ).value = data[4];
         }
     }   
     });
@@ -160,10 +161,11 @@ mysqli_close($conn);
     var next_val = Number(next_val)+1;
     if(next_val >= images.length)
     {
+		document.cookie = "id = " + next_val;
      	if(confirm("Entry is Completed. Do you want to go to Home Page?"))
-	{
+		{
 	 	document.getElementById("home").click();
-	}
+		}
 	else
 	{
 		return;
@@ -175,25 +177,26 @@ mysqli_close($conn);
     document.getElementById( "img_no" ).value = next_val;
     document.getElementById("height").innerHTML = height[next_val];
     document.getElementById("width").innerHTML = width[next_val];
-        var data = data;
+    var data = data;
     $.ajax({
       url: "api.php?uniqid=<?php echo $uniqid; ?>&filename='" + images[next_val] + "'", 
       data: data,
 	dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
       {
-	//alert(data);
+
 	if (data == null){
-	document.getElementById( "input1" ).value = "";
-	document.getElementById( "input2" ).value = "";
-	document.getElementById( "input3" ).value = "";
-	document.getElementById( "input4" ).value = "";
+		document.getElementById( "input2" ).value = "";
+		document.getElementById( "input3" ).value = "";
+		document.getElementById( "input4" ).value = "";
 	}
 	else{
-	document.getElementById( "input1" ).value = data[1];
-	document.getElementById( "input2" ).value = data[2];
-    document.getElementById( "input3" ).value = data[3];
-    document.getElementById( "input4" ).value = data[4];
+		//var input1 = document.form.input1;
+		//input1[data[1]].checked = true;
+		$("input[name=input1][value="+data[1]+"]").attr('checked', true);
+		document.getElementById( "input2" ).value = data[2];
+		document.getElementById( "input3" ).value = data[3];
+		document.getElementById( "input4" ).value = data[4];
 	}
     }   
     });
@@ -213,82 +216,64 @@ mysqli_close($conn);
 	});
   }
 
-function keepdata()
+function loadnextdata()
   {
-	var i = <?php echo $_id; ?>;
+	var i = <?php echo $_id + 1; ?>;
+	//alert(i);
 	var height = <?php echo json_encode($height); ?>;
     var width = <?php echo json_encode($width); ?>;
     var images = <?php echo json_encode($json); ?>;
+	//alert(images);
   
-	$( '#slideshow_image' ).attr( 'src' , 'images/'+images[i]);
+	if(i >= images.length)
+    {
+		if(confirm("Entry is Completed. Do you want to go to Home Page?"))
+		{
+			document.getElementById("home").click();
+		}
+	}
+	else
+	{
+		$( '#slideshow_image' ).attr( 'src' , 'images/'+images[i]);
+		
+	}
     document.getElementById( "img_no" ).value = i;
-    document.getElementById("height").innerHTML = height[i];
-    document.getElementById("width").innerHTML = width[i];
+	document.cookie = "id = " + i;
+	
+	var data = data;
+    $.ajax({
+      url: "api.php?uniqid=<?php echo $uniqid; ?>&filename='" + images[i] + "'", 
+      data: data,
+	dataType: 'json',                //data format      
+      success: function(data)          //on recieve of reply
+      {
+	//alert(data);
+	if (data == null){
+		document.getElementById( "input2" ).value = "";
+		document.getElementById( "input3" ).value = "";
+		document.getElementById( "input4" ).value = "";
+	}
+	else{
+		//var input1 = document.form.input1;
+		//input1[data[1]].checked = true;
+		$("input[name=input1][value="+data[1]+"]").attr('checked', true);
+		document.getElementById( "input2" ).value = data[2];
+		document.getElementById( "input3" ).value = data[3];
+		document.getElementById( "input4" ).value = data[4];
+	}
+    }   
+    });
+    //document.getElementById("height").innerHTML = height[i];
+    //document.getElementById("width").innerHTML = width[i];
   }
 	
   </script>
-
- <?php
-require_once('include-files/connection.php');
-
-$i1 = $i2 = $i3 = $i4 = '';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST")
-{
-  $msg = '';
-  $i1 = trim($_POST['input1']);
-  $i2 = trim($_POST['input2']);
-  $i3 = trim($_POST['input3']);
-  $i4 = trim($_POST['input4']);
-
-  $dbhost = 'localhost';
-  $dbuser = 'root';
-  $dbpass = '';
-
-  $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
-  $query1 = "SELECT * FROM news.news2 where filename='".$json[$_id]."'";
-  //echo "$query1";
-  $result = mysqli_query($conn,$query1);
-
-  //print_r($result);
-  //echo "ankir..";
-  if(mysqli_num_rows($result) < 1)
-  {
-    $query = 'INSERT INTO news.news2 SET ';
-    $query .= ' input1 = \''.$i1.'\'';
-    $query .= ' , input2 = \''.$i2.'\'';
-    $query .= ' , input3 = \''.$i3.'\'';
-    $query .= ' , input4 = \''.$i4.'\'';
-    $query .= ' , filename = \''.$json[$_id].'\'';
-    $query .= ' , unique_id = '.  $uniqid;
-//echo $query;
-    mysqli_query($conn, $query) or die(mysqli_error($conn));
-  }
-  else {
-      $query = 'UPDATE news.news2 SET ';
-      $query .= ' input1 = \''.$i1.'\'';
-      $query .= ' , input2 = \''.$i2.'\'';
-      $query .= ' , input3 = \''.$i3.'\'';
-      $query .= ' , input4 = \''.$i4.'\'';
-      $query .= ' where filename = \''.$json[$_id].'\'';
-  //echo $query;
-      mysqli_query($conn, $query) or die(mysqli_error($conn));
-  }
-  //echo $query;
-  mysqli_close($conn);
-
-  $i1 = $i2 = $i3 = $i4 = '';
-
-}
-//mysqli_close($conn);
-?>
 
 	<input type="text" style="display:none" id="hiddenVal" value='1' />
 	<br>
 
 	<?php
 		$_id= $_COOKIE['id'];
-//echo $_id;
 	?>
 
 	<table align="center" cellspacing='5' cellpadding='5'  border='0' width="1000" frame="box" style="background-color: #ffffff;">
@@ -326,6 +311,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			</th>
 		</tr>
 
+<?php
+require_once('include-files/connection.php');
+
+if ($_SERVER["REQUEST_METHOD"] == "POST")
+{
+  $msg = '';
+  $i1 = isset($_POST['input1']) ? trim($_POST['input1']) : 'Pooja';
+  $i2 = isset($_POST['input2']) ? trim($_POST['input2']) : '';
+  $i3 = isset($_POST['input3']) ? trim($_POST['input3']) : '';
+  $i4 = isset($_POST['input4']) ? trim($_POST['input4']) : '';
+
+  $dbhost = 'localhost';
+  $dbuser = 'root';
+  $dbpass = '';
+
+  $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
+  $query1 = "SELECT * FROM news.news2 where filename='".$json[$_id]."'";
+  //echo "$query1";
+  $result = mysqli_query($conn,$query1);
+
+  //print_r($result);
+  //echo "ankir..";
+  if(mysqli_num_rows($result) < 1)
+  {
+    $query = 'INSERT INTO news.news2 SET ';
+    $query .= ' input1 = \''.$i1.'\'';
+    $query .= ' , input2 = \''.$i2.'\'';
+    $query .= ' , input3 = \''.$i3.'\'';
+    $query .= ' , input4 = \''.$i4.'\'';
+    $query .= ' , filename = \''.$json[$_id].'\'';
+    $query .= ' , unique_id = '.  $uniqid;
+//echo $query;
+    mysqli_query($conn, $query) or die(mysqli_error($conn));
+  }
+  else {
+      $query = 'UPDATE news.news2 SET ';
+      $query .= ' input1 = \''.$i1.'\'';
+      $query .= ' , input2 = \''.$i2.'\'';
+      $query .= ' , input3 = \''.$i3.'\'';
+      $query .= ' , input4 = \''.$i4.'\'';
+      $query .= ' where filename = \''.$json[$_id].'\'';
+  //echo $query;
+      mysqli_query($conn, $query) or die(mysqli_error($conn));
+  }
+  //echo $query;
+  mysqli_close($conn);
+
+  //$i1 = $i2 = $i3 = $i4 = '';
+  echo '<script type="text/javascript">',
+
+     'loadnextdata();',
+
+     '</script>';
+}
+
+//mysqli_close($conn);
+?>
+		
 <form name="form" action="" method="POST">
 
 	<tr height="100">
@@ -333,15 +376,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	</tr>
 
 	<tr height="10">
-    	<th align="right" width="150">
-        	Advertise/News:
-        </th>
+    	<td width="150">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="radio" name="input1" id="input1" value="News"> News
+        </td>
+		
         <td width="150">
-			<select name="input1" id="input1" style="width:240px;">
-			  <option value="advertisement">Advertisement</option>
-			  <option value="news">News</option>
-			</select>
-			
+			&nbsp;&nbsp;&nbsp;
+			<input type="radio" name="input1" id="input1" value="Advertisement"> Advertisement
         </td>
 	</tr>
 
@@ -350,7 +392,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         	Advertiser :
         </th>
         <td width="150">
-        	<input type="text" name="input2" id="input2" size="30" value="<?php echo $i2 ?>" />
+        	<input type="text" name="input2" id="input2" size="30" value="<?php echo $i2; ?>" />
         </td>
 	</tr>
 
@@ -359,7 +401,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         	Input 3 :
         </th>
         <td width="150">
-        	<input type="text" name="input3" id="input3" size="30" value="<?php echo $i3 ?>" />
+        	<input type="text" name="input3" id="input3" size="30" value="<?php echo $i3; ?>" />
         </td>
 	</tr>
 
@@ -368,7 +410,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         	Input 4 :
         </th>
         <td width="150">
-        	<input type="text" name="input4" id="input4" size="30" value="<?php echo $i4	 ?>" />
+        	<input type="text" name="input4" id="input4" size="30" value="<?php echo $i4; ?>" />
         </td>
 	</tr>
 

@@ -11,14 +11,15 @@
 	   die('Could not connect: ' . mysql_error());
 	}
 
-	$newspaper = '';
-	$date = '';
-	$pageno = '';
+	$newspaper = $date = $pageno = $edition = $section = $i1 = $i2 = $i3 = $i4 = $column = ''; 
+	$hw = $hc = $thw = $thc = 0;
 
 	$newspaper = trim($_POST['newspaper']);
 	$pageno = trim($_POST['pageno']);
 	//$date = trim($_POST['datepicker']);
 	$date = date("y-m-d", strtotime(trim($_POST['datepicker'])));
+	$edition = trim($_POST['edition']);
+	$section = trim($_POST['section']);
 	$i1 = trim($_POST['input1']);
 	$i2 = trim($_POST['input2']);
 	$i3 = trim($_POST['input3']);
@@ -43,7 +44,17 @@
 		$query .= " AND a.date='". $date ."'";
 	}
 
-	if (isset($input1) and !empty($input1))
+	if (isset($edition) and !empty($edition))
+	{
+		$query .= " AND a.edition='". $edition ."'";
+	}
+	
+	if (isset($section) and !empty($section))
+	{
+		$query .= " AND a.section='". $section ."'";
+	}
+	
+	if (isset($i1) and !empty($i1))
 	{
 		$query .= " AND b.input1='". $i1 ."'";
 	}
@@ -63,10 +74,9 @@
 		$query .= " AND b.input4='". $i4 ."'";
 	}
 
+	//echo $date;
 	//echo $query;
-
-
-//echo $query;
+	
 	mysqli_select_db($conn, 'news');
 
 	$retval = mysqli_query($conn, $query);
@@ -83,11 +93,21 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Report</title>
 
-	<link href="CSS/._main.css" rel="stylesheet" type="text/css">
-
 </head>
 
-<script type="text/javascript" src="JS/._main.js"></script>
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+
+<script type="text/javascript">
+
+	function export_data()
+	{
+		var str = "exportrep.php?query='<?php echo $query; ?>'";
+		$.get(str, function(data){
+			alert("Data Exported Successfully");
+		});
+	}
+
+</script>
 
 <body background="bg.png">
 
@@ -95,9 +115,16 @@
 	
 		<br>
 		
+		<?php
+		$file = "exportrep.php?query=" . $query;
+		?>
+		<form action="<?php echo $file ?>" method="POST">
 		<input type="button" name="home" value="Home" onclick="parent.location='main.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="report" value="Report" onclick="parent.location='rep_flt.php'">
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="submit" name="export" id="export" value="Export" onclick="export_data();">
+		</form>
 	
 		<br>
 		<br>
@@ -108,7 +135,7 @@
 	<table border="1" align="center" cellpadding="10" cellspacing="10" frame="box" style="background-color: #ffffff;">
 	
 	<tr>
-    	<td align="center" width="500" colspan='10'>
+    	<td align="center" width="500" colspan='16'>
 			<h1 align="center">
 				Report Data
 			</h1>
@@ -116,12 +143,18 @@
 	</tr>
 	
 	<tr>
+		<th>Sr. No</th>
 		<th>Newspaper</th>
 		<th>Date</th>
 		<th>Page No</th>
+		<th>Edition</th>
+		<th>Section</th>
 		<th>File Name</th>
 		<th>Height</th>
 		<th>Width</th>
+		<th>Columns</th>
+		<th>Height*Width</th>
+		<th>Height*Column</th>
 		<th>Advertise/News?</th>
 		<th>Advertiser</th>
 		<th>Input 3</th>
@@ -129,15 +162,29 @@
 	</tr>
 
 	<?php
+	
+	$i = 0;
 	while($row = mysqli_fetch_array($retval))
 	{
+		$i=$i+1;
+		$column = round($row['width']/(trim($row['section']) == "Main" ? 4.5 : 4));
+		$hw = $row['height']* $row['width'];
+		$hc = round($row['height']* $column,3);
+		$thw = $thw + $hw;
+		$thc = $thc + $hc;
 		echo "<tr>";
+			echo "<td>" . $i . "</td>";
 			echo "<td>" . $row['newspaper'] . "</td>";
 			echo "<td>" . $row['date'] . "</td>";
 			echo "<td>" . $row['pageno'] . "</td>";
+			echo "<td>" . $row['edition'] . "</td>";
+			echo "<td>" . $row['section'] . "</td>";
 			echo "<td>" . $row['filename'] . "</td>";
 			echo "<td>" . $row['height'] . "</td>";
 			echo "<td>" . $row['width'] . "</td>";
+			echo "<td>" . $column . "</td>";
+			echo "<td>" . $hw . "</td>";
+			echo "<td>" . $hc . "</td>";
 			echo "<td>" . $row['input1'] . "</td>";
 			echo "<td>" . $row['input2'] . "</td>";
 			echo "<td>" . $row['input3'] . "</td>";
@@ -146,6 +193,16 @@
 	}
 	?>
 
+	<tfoot>
+		<tr>
+		  <td>Total</td>
+		  <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+		  <td> <?php echo $thw; ?></td>
+		  <td> <?php echo $thc; ?></td>
+		  <td></td><td></td><td></td><td></td>
+		</tr>
+	</tfoot>
+	
 	</table>
 
 
@@ -156,3 +213,4 @@
 <?php
 	mysqli_close($conn);
 ?>
+

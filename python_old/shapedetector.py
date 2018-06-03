@@ -13,7 +13,7 @@ class ShapeDetector:
 		w = 0
 		h = 0
 		peri = cv2.arcLength(c, True)
-		approx = cv2.approxPolyDP(c, 0.08 * peri, True)
+		approx = cv2.approxPolyDP(c, 0.05 * peri, True)
 		# if the shape is a triangle, it will have 3 vertices
 		if len(approx) == 3:
 			shape = "triangle"
