@@ -151,6 +151,13 @@
 			valid = false;
 			return false;
 		}
+
+		if (document.form.pageno.value == "" || isNaN(document.form.pageno.value))
+		{
+			alert("Invalid Page No");
+			valid = false;
+			return false;
+		}
 		
 		if (valid)
 		{

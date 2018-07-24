@@ -11,13 +11,14 @@
 	   die('Could not connect: ' . mysql_error());
 	}
 
-	$newspaper = $date = $pageno = $edition = $section = $i1 = $i2 = $i3 = $i4 = $column = ''; 
-	$hw = $hc = $thw = $thc = 0;
+	$newspaper = $date = $pageno = $edition = $section = $i1 = $i2 = $i3 = $i4 = ''; 
+	$hw = $hc = $thw = $thc = $h = $w = $column = $fact = 0;
 
 	$newspaper = trim($_POST['newspaper']);
 	$pageno = trim($_POST['pageno']);
 	//$date = trim($_POST['datepicker']);
 	$date = date("y-m-d", strtotime(trim($_POST['datepicker'])));
+	//echo $date;
 	$edition = trim($_POST['edition']);
 	$section = trim($_POST['section']);
 	$i1 = trim($_POST['input1']);
@@ -135,7 +136,7 @@
 	<table border="1" align="center" cellpadding="10" cellspacing="10" frame="box" style="background-color: #ffffff;">
 	
 	<tr>
-    	<td align="center" width="500" colspan='16'>
+    	<td align="center" width="500" colspan='17'>
 			<h1 align="center">
 				Report Data
 			</h1>
@@ -150,11 +151,12 @@
 		<th>Edition</th>
 		<th>Section</th>
 		<th>File Name</th>
-		<th>Height</th>
-		<th>Width</th>
-		<th>Columns</th>
-		<th>Height*Width</th>
-		<th>Height*Column</th>
+		<th>Height (cm)</th>
+		<th>Width(cm)</th>
+		<th>Height*Width(cm)</th>
+		<th>Height(cm)</th>
+		<th>Columns(nS)</th>
+		<th>Height*Column(CC)</th>
 		<th>Advertise/News?</th>
 		<th>Advertiser</th>
 		<th>Input 3</th>
@@ -167,9 +169,27 @@
 	while($row = mysqli_fetch_array($retval))
 	{
 		$i=$i+1;
-		$column = round($row['width']/(trim($row['section']) == "Main" ? 4.5 : 4));
-		$hw = $row['height']* $row['width'];
-		$hc = round($row['height']* $column,3);
+		$h = $row['height'];
+		$w = $row['width'];
+		$fact = (trim($row['section']) == "Main" ? 4.5 : 4);
+		$fact = (trim($row['edition']) == "MUM" ? 4 : $fact);
+		
+		$nh = round($h);
+		$w = round($w);
+		//echo $w;
+//echo $w . "    P    " . $fact. "     P     ".round($w)%$fact;
+//echo "<br>";
+		$nw = ($w<=$fact) ? $fact : (round($w)%$fact == 0 ? round($w) : round(($w+$fact/2)/$fact)*$fact);
+		//(round($n)%$x === 0) ? round($n) : round(($n+$x/2)/$x)*$x;
+		//$w = ceil($w);
+		//$nw = ($w<=$fact) ? $fact : round(($w+$fact/2)/$fact)*$fact;
+		//$nw = ($w<=$fact) ? $fact :((ceil($w)%$fact === 0) ? ceil($w) : round(($w+$fact/2)/$fact)*$fact);
+		//$nw = ($w<=$fact) ? $fact :((ceil($w)%$fact === 0) ? ceil($w) : round($w/$fact)*$fact);
+		
+		$column = $nw/$fact;
+		
+		$hw = $nh*$nw;
+		$hc = $nh* $column;
 		$thw = $thw + $hw;
 		$thc = $thc + $hc;
 		echo "<tr>";
@@ -180,10 +200,12 @@
 			echo "<td>" . $row['edition'] . "</td>";
 			echo "<td>" . $row['section'] . "</td>";
 			echo "<td>" . $row['filename'] . "</td>";
-			echo "<td>" . $row['height'] . "</td>";
-			echo "<td>" . $row['width'] . "</td>";
-			echo "<td>" . $column . "</td>";
+			//echo "<td>" . $row['width'] . 'P' . $fact ."p". $x. "</td>";
+			echo "<td>" . $nh . "</td>";
+			echo "<td>" . $nw . "</td>";
 			echo "<td>" . $hw . "</td>";
+			echo "<td>" . $nh . "</td>";
+			echo "<td>" . $column . "</td>";
 			echo "<td>" . $hc . "</td>";
 			echo "<td>" . $row['input1'] . "</td>";
 			echo "<td>" . $row['input2'] . "</td>";
@@ -196,8 +218,9 @@
 	<tfoot>
 		<tr>
 		  <td>Total</td>
-		  <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+		  <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
 		  <td> <?php echo $thw; ?></td>
+		  <td></td><td></td>
 		  <td> <?php echo $thc; ?></td>
 		  <td></td><td></td><td></td><td></td>
 		</tr>
