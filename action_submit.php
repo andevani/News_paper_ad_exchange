@@ -8,6 +8,7 @@ require_once('include-files/connection.php');
 	$edition = '';
 	$section = '';
 	$filename = '';
+	$afilename = '';
 	$msg = '';
 	$file = '';
 	$cheight = '';
@@ -15,11 +16,15 @@ require_once('include-files/connection.php');
 
 	$newspaper = trim($_POST['newspaper']);
 	$pageno = trim($_POST['pageno']);
+//echo "<br>";
+//echo $pageno;
+//echo "<br>";
 	$edition = trim($_POST['edition']);
 	$section = trim($_POST['section']);
 	$date = trim($_POST['datepicker']);
 	echo $date;
 	$date = date("y-m-d", strtotime(trim($_POST['datepicker'])));
+	$unique_id = uniqid();
 
 	//$filename = trim($_POST['fileToUpload']);
 
@@ -29,11 +34,126 @@ require_once('include-files/connection.php');
 	echo $filename_tmp;
 	if (isset($_FILES["fileToUpload"]["name"])) {
 
-    $name = $_FILES["fileToUpload"]["name"];
-    $tmp_name = $_FILES['fileToUpload']['tmp_name'];
-    $error = $_FILES['fileToUpload']['error'];
+		$name = $_FILES["fileToUpload"]["name"];
+		$tmp_name = $_FILES['fileToUpload']['tmp_name'];
+		$error = $_FILES['fileToUpload']['error'];
 		echo "Ankur.........";
 	}
+
+//=========================================================================	
+	//upload data of file into database
+	
+	$afilename = $_FILES["advfile"]["name"];
+	if ($afilename)
+	{
+	$afilename_tmp = $_FILES["advfile"]["tmp_name"];
+	require_once('excel_reader2.php');
+	require_once('SpreadsheetReader.php');
+       
+  //$allowedFileType = ['application/vnd.ms-excel','text/xls','text/xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  
+  //if(in_array($_FILES["advfile"]["type"],$allowedFileType)){
+
+        mysqli_query($conn,'TRUNCATE TABLE news.advdata');
+		$targetPath = 'uploads/'.$_FILES['advfile']['name'];
+		echo "<br>";
+		echo "<br>";
+		echo $targetPath."pooooojjjjjaaaa";
+		echo "<br>";
+		echo "<br>";
+        move_uploaded_file($_FILES['advfile']['tmp_name'], $targetPath);
+        
+        $Reader = new SpreadsheetReader($targetPath);
+        
+        $sheetCount = count($Reader->sheets());
+		echo $sheetCount;
+		echo "<br>";
+		echo "<br>";
+        
+        for($i=0;$i<$sheetCount;$i++)
+        {
+            $Reader->ChangeSheet($i);
+            
+            foreach ($Reader as $Row)
+            {
+                $agent = "";
+                if(isset($Row[0])) {
+                    $agent = mysqli_real_escape_string($conn,$Row[0]);
+                }
+                
+				$client = "";
+                if(isset($Row[1])) {
+                    $client = mysqli_real_escape_string($conn,$Row[1]);
+                }
+				
+				$cobw = "";
+                if(isset($Row[2])) {
+                    $cobw = mysqli_real_escape_string($conn,$Row[2]);
+                }
+				
+				$size = "";
+                if(isset($Row[3])) {
+                    $size = mysqli_real_escape_string($conn,$Row[3]);
+                }
+				
+				$cat = "";
+                if(isset($Row[4])) {
+                    $cat = mysqli_real_escape_string($conn,$Row[4]);
+                }
+				
+				$pdate = "";
+                if(isset($Row[5])) {
+                    $pdate = mysqli_real_escape_string($conn,$Row[5]);
+                }
+				
+				$ppg = "";
+                if(isset($Row[6])) {
+                    $ppg = mysqli_real_escape_string($conn,$Row[6]);
+                }
+				
+				$bpg = "";
+                if(isset($Row[7])) {
+                    $bpg = mysqli_real_escape_string($conn,$Row[7]);
+                }
+				
+				$pgno = "";
+                if(isset($Row[8])) {
+                    $pgno = mysqli_real_escape_string($conn,$Row[8]);
+                }
+				
+				$matter = "";
+                if(isset($Row[9])) {
+                    $matter = mysqli_real_escape_string($conn,$Row[9]);
+                }
+				
+                if (!empty($pgno) || !empty($agent) || !empty($client)) {
+                    $query = "insert into news.advdata(uniqueid,agent,client,cobw,size,cat,pdate,ppg,bpg,pgno,matter) values('".$unique_id."','".$agent."','".$client."','".$cobw."','".$size."','".$cat."','".$pdate."','".$ppg."','".$bpg."','".$pgno."','".$matter."')";
+					//echo $query;
+					//echo "<br>";
+					//echo "<br>";
+                    $result = mysqli_query($conn, $query);
+                
+                    if (! empty($result)) {
+                        $type = "success";
+                        $message = "Excel Data Imported into the Database";
+                    } else {
+                        $type = "error";
+                        $message = "Problem in Importing Excel Data";
+                    }
+                }
+             }
+        
+         }
+	}
+  //}
+  //else
+  //{ 
+   //     $type = "error";
+    //    $message = "Invalid File Type. Upload Excel File.";
+  //}
+	
+//========================================================================	
+	
 
 	if(isset($filename) && $filename == '')
 	{
@@ -68,8 +188,6 @@ require_once('include-files/connection.php');
 
 	if(isset($msg) && $msg == '')
 	{
-		$unique_id = uniqid();
-
 		$query = 'INSERT INTO news.news1 SET ';
 		$query .= ' newspaper = \''.$newspaper.'\'';
 		$query .= ' , date = \''.$date.'\'';
@@ -96,26 +214,34 @@ require_once('include-files/connection.php');
    //
    
    //calculate height & width of canvas
-   $query = 'Select * from news.news4 where newspaper = \''.$newspaper.'\' AND edition = \''.$edition.'\' AND section = \''.$section.'\'';
-   echo $query;
-   $result = mysqli_query($conn, $query);
-   
-   $cweight = $cheight = '';
-   
-	while($row = mysqli_fetch_assoc($result)){
-		$cheight = 6.14*$row["pheight"];
-		$cwidth = 6.74*$row["pwidth"];
-	}
-	
-	echo 'ppppp'.$cheight;
-	echo 'ppppp'.$cwidth;
+   if (trim($_POST['h_w']) == "default")
+   {
+	   $query = 'Select * from news.news4 where newspaper = \''.$newspaper.'\' AND edition = \''.$edition.'\' AND section = \''.$section.'\'';
+	   //echo $query;
+	   $result = mysqli_query($conn, $query);
+	   
+	   $cweight = $cheight = '';
+	   
+		while($row = mysqli_fetch_assoc($result)){
+			$cheight = 6.14*$row["pheight"];
+			$cwidth = 6.74*$row["pwidth"];
+		}
+   }
+   else
+   {
+	   $cheight = trim($_POST['cheight']);
+	   $cwidth = trim($_POST['cwidth']);
+   }
+	//echo 'ppppp'.$cheight;
+	//echo 'ppppp'.$cwidth;
 	
 	//$cheight = '2000';
 	//$cwidth = '2000';
 	
 	//echo $cheight;
 	//echo $cwidth;
-	header("Location: ankur2.php?uniqid='".$unique_id."'&cheight='".$cheight."'&cwidth='".$cwidth."'");
+	//echo $pgno;
+	header("Location: ankur2.php?uniqid='".$unique_id."'&cheight='".$cheight."'&cwidth='".$cwidth."'&newspaper='".$newspaper."'");
 	 //header("Location: slideshow.php?uniqid='".$unique_id."'");
 	 //header("Location: upload.php?num=".$_POST['num']."");
 ?>

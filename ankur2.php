@@ -9,7 +9,7 @@ $cwidth = $cheight = '';
 $uniqid = $_GET['uniqid'];
 $cheight = $_GET['cheight'];
 $cwidth = $_GET['cwidth'];
-
+$newspaper = $_GET['newspaper']
 ?>
 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
     <body>
@@ -22,7 +22,8 @@ $cwidth = $_GET['cwidth'];
 		<input type="button" name="report" value="Report" onclick="parent.location='rep_flt.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="download" value="Downoad" onclick="img_save()">
-	
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" name="undo" value="Undo" onclick="img_undo()">	
 	</div>
 
         <canvas id="canvas" align='center'></canvas>
@@ -35,7 +36,7 @@ $cwidth = $_GET['cwidth'];
     context.canvas.height = <?php echo $cheight; ?>;
 	//context.canvas.width = 0.88*window.innerWidth;
     //context.canvas.height = 2.4*window.innerHeight;
-
+	var restorePoints = [];
     make_base();
 
     function make_base()
@@ -121,7 +122,16 @@ console.log("mouse location:", e.clientX, e.clientY)
       isDown=false;
        //$("#uplog").html("Up: " + mouseX + " / " + mouseY);
        console.log("mouse up location:", mouseX, mouseY,document.documentElement.scrollTop||document.body.scrollTop);
+	var canvas = document.getElementById("canvas");
+
+      var dataURL_undo = canvas.toDataURL();
+
+      console.log(dataURL_undo);
+
+      restorePoints.push(dataURL_undo);
+
       drawRectangle(mouseX,mouseY);
+	//drawRectangle(mouseX,mouseY);
     }
 
     function handleMouseMove(e){
@@ -198,10 +208,38 @@ ajax.send("imgData="+canvasData);
 //ajax.send("height="+"15");
 //alert (canvasData);
 var uniqid = <?php echo $uniqid; ?>;
-//alert (uniqid);
-location.href = "slideshow_python.php?uniqid=<?php echo $uniqid; ?>";
+var newspaper = <?php echo $newspaper; ?>;
+alert(newspaper);
+//var str = "slideshow_python.php?uniqid='" + uniqid + "'&pageno='"+pageno+"'";
+//alert(str)
+location.href = "slideshow_python.php?uniqid=" + uniqid + "&pageno="+newspaper;
 }
 
+function img_undo() {
+
+var oImg = new Image();
+
+
+
+oImg.onload = function() {
+
+
+
+var canvas = document.getElementById("canvas");
+
+var canvasContext = canvas.getContext('2d');
+
+canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+
+canvasContext.drawImage(oImg, 0, 0);
+
+}
+
+
+
+oImg.src = restorePoints.pop();
+
+}
   </script>
 
 </body>

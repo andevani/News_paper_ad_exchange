@@ -10,6 +10,7 @@
 	{
 	   die('Could not connect: ' . mysql_error());
 	}
+		
 
 	$newspaper = $date = $pageno = $edition = $section = $i1 = $i2 = $i3 = $i4 = ''; 
 	$hw = $hc = $thw = $thc = $h = $w = $column = $fact = 0;
@@ -28,6 +29,7 @@
 
 	$query = "Select * from news.news1 as a INNER JOIN news.news2 as b on a.unique_id=b.unique_id ";
 	$query .= "INNER JOIN news.news3 as c on b.filename=c.filename where 1";
+//	$query .="INNER JOIN news.news3 as c on b.filename=c.filename";
 
 
 	if (isset($newspaper) and !empty($newspaper))
@@ -75,16 +77,16 @@
 		$query .= " AND b.input4='". $i4 ."'";
 	}
 
-	//echo $date;
-	//echo $query;
+//	echo $date;
+//	echo $query;
 	
 	mysqli_select_db($conn, 'news');
 
 	$retval = mysqli_query($conn, $query);
 
-	if(! $retval ) {
-	   die('Could not get data: ' . mysqli_error($conn));
-	}
+//	if(! $retval ) {
+//	   die('Could not get data: ' . mysqli_error($conn));
+//	}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

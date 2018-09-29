@@ -61,6 +61,8 @@ require_once('datepicker.php');
         <td width="500">
         	<select list="newspaper" name="newspaper" style="width:220px;"/>
 			  <option> Gujarat Samachar	</option>
+			  <option> Sandesh		</option>
+			  <option> Divya Bhaskar	</option>
 			</select>
         </td>
 	</tr>

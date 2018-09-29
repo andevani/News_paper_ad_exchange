@@ -17,6 +17,11 @@
   $( function() {
     $( "#datepicker" ).datepicker();
   } );
+  
+  window.onload = function() {
+   document.getElementById('cheight').disabled = true;
+   document.getElementById('cwidth').disabled = true;
+};
   </script>
 
 <body background="bg.png">
@@ -33,6 +38,10 @@
 		<input type="button" name="home" value="Home" onclick="parent.location='main.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="report" value="Report" onclick="parent.location='rep_flt.php'">
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" name="sreport" value="Summary Report" onclick="parent.location='summrep_flt.php'">
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" name="ereport" value="Exception Report" onclick="parent.location='ereport.php'">
 	
 		<br>
 		<br>
@@ -59,15 +68,6 @@
 		var valid = true;
 		//valid = $.get("validate.php");
 		
-		if (document.form.newspaper.value != "Gujarat Samachar")
-		{
-			//document.getElementById("e_newspaper").innerHTML="Not a valid Newspaper value";
-			alert("Not a valid Newspaper value");
-			//document.form.newspaper.setfocus();
-			valid = false;
-			return false;
-		}
-		
 		var edition = ['AHM','BRD','SRT','RAJ','BHV','BHJ','MUM','RaviPurti','Shatdal','Chitralok','Dharmalok','Zagmag','Sahiyar'];
 		if (edition.includes(document.form.edition.value))
 		{
@@ -88,6 +88,7 @@
 		
 		switch(document.form.edition.value) 
 		{
+
 			case 'AHM':
 				var section = ['Main', 'GSPlus', 'KhedaAnand', 'Gandhinagar', 'Surendranagar', 'Sabarkantha', 'Mehsana'];
 				break;
@@ -141,6 +142,11 @@
 				break;
 		}
 
+		if (document.form.newspaper.value == "Sandesh" || document.form.newspaper.value == "Divya Bhaskar")
+		{
+			section = ['Main'];
+		}
+
 		if (section.includes(document.form.section.value))
 		{
 		}
@@ -164,6 +170,23 @@
 			return true;
 		}
 	
+	}
+	
+	function custhw()
+	{
+		if (document.getElementById("default").checked)
+		{
+			document.getElementById('cheight').value = '';
+			document.getElementById('cwidth').value = '';
+			
+			document.getElementById('cheight').disabled = true;
+			document.getElementById('cwidth').disabled = true;
+		}
+		else
+		{
+			document.getElementById('cheight').disabled = false;
+			document.getElementById('cwidth').disabled = false;
+		}
 	}
 	
 	</script>
@@ -193,6 +216,8 @@
         <td width="500">
         	<select list="newspaper" name="newspaper" style="width:220px;"/>
 			  <option> Gujarat Samachar	</option>
+			  <option> Sandesh		</option>
+			  <option> Divya Bhaskar	</option>
 			</select>
 
 	<tr>
@@ -264,6 +289,45 @@
 	</tr>
 	
 	<tr>
+		<td align="right" valign="top" width="500">
+			Newspaper Height/Width :
+		</td>
+		
+		<td>
+			<input type="radio" name="h_w" id="default" value="default" onclick="custhw()" checked> Default <br>
+			<input type="radio" name="h_w" id="customized" value="customized" onclick="custhw()"> Customized <br>
+		</td>
+	</tr>
+	
+	<tr>
+    	<td align="right" valign="top" width="500">
+			Height :
+		</td>
+		<td>
+			<input type="input" name="cheight" id="cheight" style="width:120px;">
+		</td>
+	</tr>
+
+	<tr>
+    	<td align="right" valign="top" width="500">
+			Width :
+		</td>
+		<td>
+			<input type="input" name="cwidth" id="cwidth" style="width:120px;">
+		</td>
+	</tr>
+	
+	<tr>
+    	<td align="right" valign="top" width="500">
+			Select Upload File :
+		</td>
+		<td>
+			<input type="file" name="advfile">
+		</div>
+		</td>
+	</tr>
+	
+	<tr>
     	<td align="right" valign="top" width="500">
 			Select File :
 		</td>
@@ -272,7 +336,7 @@
 		</div>
 		</td>
 	</tr>
-
+	
 	<tr>
     	<td colspan="3" align="center">
 		<div class="fileUpload btn btn-primary">
@@ -296,5 +360,3 @@
 </div>
 
 </html>
-
-

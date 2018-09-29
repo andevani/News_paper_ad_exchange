@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> News Paper Advertisement Images </title>
 <link rel="stylesheet" type="text/css" href="slideshow_style.css">
 <script>
@@ -7,6 +8,9 @@ document.cookie = "id = 1";
 </script>
 
 <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css" />
 
 <?php
 $dbhost = 'localhost';
@@ -30,10 +34,14 @@ $_id= $_COOKIE['id'];
 
 
 $uniqid = $_GET['uniqid'];
+$newspaper = $_GET['newspaper'];
+//echo $newspaper;
+//ECHO "POOJA";
 //echo $_GET['uniqid'];
 //$_GET['uniqid'];
-$sql = 'SELECT * from news.news3 WHERE unique_id='.$uniqid;
+$sql = "SELECT * from news.news3 WHERE unique_id='".$uniqid."'";
 //$sql = 'SELECT * from news.news3 WHERE unique_id="5ab93a4874152"';
+//echo $sql;
 
 mysqli_select_db($conn, 'news');
 
@@ -51,11 +59,147 @@ while($row = mysqli_fetch_assoc($retval)){
 
 //print_r($height);
 //print_r($width);
-mysqli_close($conn);
+//mysqli_close($conn);
 
-$i1 = $i2 = $i3 = $i4 = '';
+$i1 = $i2 = $i3 = $i4 = $cat2 = $agent2 = $client2 = $brand2 = $prdcat2 = $prod2 = '';
 
+//query to get brand name from database
+$bquery = "select * from news.brand";
+$bresult = mysqli_query($conn, $bquery) or die(mysqli_error($conn));
+
+$boption = '["Other",';
+while($row = mysqli_fetch_array($bresult))
+{
+	$boption .= '"' .$row['bname'].'",';
+}
+$boption .= ']';
+//echo $boption;
+
+//query to get category name from database
+$cquery = "select * from news.cat";
+$cresult = mysqli_query($conn, $cquery) or die(mysqli_error($conn));
+
+$coption = '';
+while($row = mysqli_fetch_array($cresult))
+{
+	$coption .= '<option>'.$row['cname'].'</option>';
+}
+
+//query to get product name from database
+$pquery = "select * from news.prd";
+$presult = mysqli_query($conn, $pquery) or die(mysqli_error($conn));
+
+$poption = '["Other",';
+while($row = mysqli_fetch_array($presult))
+{
+	$poption .= '"' .$row['pname'].'",';
+}
+$poption .= ']';
+
+//query to get product category from database
+$pcquery = "select * from news.prdcat";
+$pcresult = mysqli_query($conn, $pcquery) or die(mysqli_error($conn));
+
+$pcoption = '["Other",';
+while($row = mysqli_fetch_array($pcresult))
+{
+	$pcoption .= '"' .$row['pcname']. '",';
+}
+$pcoption .= ']';
+
+//query to get agent & client from database
+if ($newspaper = "Gujarat Samachar")
+{
+	$aquery = "select * from news.advdata";
+	//echo $aquery;
+	$aresult = mysqli_query($conn, $aquery) or die(mysqli_error($conn));
+
+	$aoption = '';
+	$cloption = '';
+	while($row = mysqli_fetch_array($aresult))
+	{
+		$aoption .= '<option>'.$row['agent'].'</option>';
+		$cloption .= '<option>'.$row['client'].'</option>';
+	}
+}
+else
+{
+	//agent	
+	$aquery = "select * from news.agent";
+	$aresult = mysqli_query($conn, $clquery) or die(mysqli_error($conn));
+
+	$aoption = '[Other';
+	while($row = mysqli_fetch_array($aresult))
+	{
+		$aoption .= '"' .$row['aname']. '",';
+	}
+	$aoption .= ']';
+
+	//Client
+	$clquery = "select * from news.client";
+	$clresult = mysqli_query($conn, $clquery) or die(mysqli_error($conn));
+
+	$cloption = '[';
+	while($row = mysqli_fetch_array($clresult))
+	{
+		$cloption .= '"' .$row['clname']. '",';
+	}
+	$cloption .= ']';
+}
+
+/* //query to get client from database
+$clquery = "select * from news.client";
+$clresult = mysqli_query($conn, $clquery) or die(mysqli_error($conn));
+
+$cloption = '[';
+while($row = mysqli_fetch_array($clresult))
+{
+	$cloption .= '"' .$row['clname']. '",';
+}
+$cloption .= ']'; */
 ?>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  
+  var boption = <?php echo $boption; ?>;
+  $("#brand").autocomplete({
+    source: boption,
+	minLength:3
+  });
+  
+  var poption = <?php echo $poption; ?>;
+  $("#prod").autocomplete({
+    source: poption,
+	minLength:3
+  });
+  
+  var pcoption = <?php echo $pcoption; ?>;
+  $("#prdcat").autocomplete({
+    source: pcoption,
+	minLength:3
+  });
+
+  if ($newspaper = "Gujarat Samachar")
+  {
+  }
+  else
+  {
+	var aoption = <?php echo $aoption; ?>;
+	$("#agent").autocomplete({
+		source: aoption,
+		minLength:3
+	});
+
+	var cloption = <?php echo $cloption; ?>;
+	$("#client").autocomplete({
+		source: cloption,
+		minLength:3
+	});
+  }
+
+ });
+</script>
 
 </head>
 
@@ -121,23 +265,47 @@ $i1 = $i2 = $i3 = $i4 = '';
     document.getElementById("width").innerHTML = width[prev_val];
      var data = data;
     $.ajax({
-      url: "api.php?uniqid=<?php echo $uniqid; ?>&filename='" + images[prev_val] + "'", 
+      url: "api.php?uniqid='<?php echo $uniqid; ?>'&filename='" + images[prev_val] + "'", 
       data: data,
         dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
       {
         if (data == null){
 			document.getElementById( "input2" ).value = "";
-			document.getElementById( "input3" ).value = "";
-			document.getElementById( "input4" ).value = "";
+			//document.getElementById( "input3" ).value = "";
+			//document.getElementById( "input4" ).value = "";
+			document.getElementById( "cat" ).value = "";
+			document.getElementById( "brand" ).value = "";
+			document.getElementById( "prod" ).value = "";
+			document.getElementById( "prdcat" ).value = "";
+			document.getElementById( "agent" ).value = "";
+			document.getElementById( "client" ).value = "";
+			document.getElementById( "cat2" ).value = "";
+			document.getElementById( "agent2" ).value = "";
+			document.getElementById( "client2" ).value = "";
+			document.getElementById( "brand2" ).value = "";
+			document.getElementById( "prdcat2" ).value = "";
+			document.getElementById( "prod2" ).value = "";
         }
         else{
 			//var input1 = document.form.input1;
 			//input1[data[1]].checked = true;
 			$("input[name=input1][value="+data[1]+"]").attr('checked', true);
 			document.getElementById( "input2" ).value = data[2];
-			document.getElementById( "input3" ).value = data[3];
-			document.getElementById( "input4" ).value = data[4];
+			//document.getElementById( "input3" ).value = data[3];
+			//document.getElementById( "input4" ).value = data[4];
+			document.getElementById( "cat" ).value = data[3];
+			document.getElementById( "brand" ).value = data[4];
+			document.getElementById( "prod" ).value = data[5];
+			document.getElementById( "prdcat" ).value = data[6];
+			document.getElementById( "agent" ).value = data[7];
+			document.getElementById( "client" ).value = data[8];
+			document.getElementById( "cat2" ).value = data[9];
+			document.getElementById( "brand2" ).value = data[10];
+			document.getElementById( "prod2" ).value = data[11];
+			document.getElementById( "prdcat2" ).value = data[12];
+			document.getElementById( "agent2" ).value = data[13];
+			document.getElementById( "client2" ).value = data[14];
         }
     }   
     });
@@ -179,7 +347,7 @@ $i1 = $i2 = $i3 = $i4 = '';
     document.getElementById("width").innerHTML = width[next_val];
     var data = data;
     $.ajax({
-      url: "api.php?uniqid=<?php echo $uniqid; ?>&filename='" + images[next_val] + "'", 
+      url: "api.php?uniqid='<?php echo $uniqid; ?>'&filename='" + images[next_val] + "'", 
       data: data,
 	dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
@@ -187,16 +355,41 @@ $i1 = $i2 = $i3 = $i4 = '';
 
 	if (data == null){
 		document.getElementById( "input2" ).value = "";
-		document.getElementById( "input3" ).value = "";
-		document.getElementById( "input4" ).value = "";
+		//document.getElementById( "input3" ).value = "";
+		//document.getElementById( "input4" ).value = "";
+		document.getElementById( "cat" ).value = "";
+		document.getElementById( "brand" ).value = "";
+		document.getElementById( "prod" ).value = "";
+		document.getElementById( "prdcat" ).value = "";
+		document.getElementById( "agent" ).value = "";
+		document.getElementById( "client" ).value = "";
+		document.getElementById( "cat2" ).value = "";
+		document.getElementById( "agent2" ).value = "";
+		document.getElementById( "client2" ).value = "";
+		document.getElementById( "brand2" ).value = "";
+		document.getElementById( "prdcat2" ).value = "";
+		document.getElementById( "prod2" ).value = "";
 	}
 	else{
 		//var input1 = document.form.input1;
 		//input1[data[1]].checked = true;
+//alert(data);
 		$("input[name=input1][value="+data[1]+"]").attr('checked', true);
 		document.getElementById( "input2" ).value = data[2];
-		document.getElementById( "input3" ).value = data[3];
-		document.getElementById( "input4" ).value = data[4];
+		//document.getElementById( "input3" ).value = data[3];
+		//document.getElementById( "input4" ).value = data[4];
+		document.getElementById( "cat" ).value = data[3];
+		document.getElementById( "brand" ).value = data[4];
+		document.getElementById( "prod" ).value = data[5];
+		document.getElementById( "prdcat" ).value = data[6];
+		document.getElementById( "agent" ).value = data[7];
+		document.getElementById( "client" ).value = data[8];
+		document.getElementById( "cat2" ).value = data[9];
+		document.getElementById( "brand2" ).value = data[10];
+		document.getElementById( "prod2" ).value = data[11];
+		document.getElementById( "prdcat2" ).value = data[12];
+		document.getElementById( "agent2" ).value = data[13];
+		document.getElementById( "client2" ).value = data[14];
 	}
     }   
     });
@@ -242,29 +435,57 @@ function loadnextdata()
 	
 	var data = data;
     $.ajax({
-      url: "api.php?uniqid=<?php echo $uniqid; ?>&filename='" + images[i] + "'", 
+      url: "api.php?uniqid='<?php echo $uniqid; ?>'&filename='" + images[i] + "'", 
       data: data,
 	dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
       {
-	//alert(data);
+	alert(data);
 	if (data == null){
 		document.getElementById( "input2" ).value = "";
-		document.getElementById( "input3" ).value = "";
-		document.getElementById( "input4" ).value = "";
+		//document.getElementById( "input3" ).value = "";
+		//document.getElementById( "input4" ).value = "";
+		document.getElementById( "cat" ).value = "";
+		document.getElementById( "brand" ).value = "";
+		document.getElementById( "prod" ).value = "";
+		document.getElementById( "prdcat" ).value = "";
+		document.getElementById( "agent" ).value = "";
+		document.getElementById( "client" ).value = "";
+		document.getElementById( "cat2" ).value = "";
+		document.getElementById( "agent2" ).value = "";
+		document.getElementById( "client2" ).value = "";
+		document.getElementById( "brand2" ).value = "";
+		document.getElementById( "prdcat2" ).value = "";
+		document.getElementById( "prod2" ).value = "";
 	}
 	else{
 		//var input1 = document.form.input1;
 		//input1[data[1]].checked = true;
 		$("input[name=input1][value="+data[1]+"]").attr('checked', true);
 		document.getElementById( "input2" ).value = data[2];
-		document.getElementById( "input3" ).value = data[3];
-		document.getElementById( "input4" ).value = data[4];
+		//document.getElementById( "input3" ).value = data[3];
+		//document.getElementById( "input4" ).value = data[4];
+		document.getElementById( "cat" ).value = data[3];
+		document.getElementById( "brand" ).value = data[4];
+		document.getElementById( "prod" ).value = data[5];
+		document.getElementById( "prdcat" ).value = data[6];
+		document.getElementById( "agent" ).value = data[7];
+		document.getElementById( "client" ).value = data[8];
+		document.getElementById( "cat2" ).value = data[9];
+		document.getElementById( "brand2" ).value = data[10];
+		document.getElementById( "prod2" ).value = data[11];
+		document.getElementById( "prdcat2" ).value = data[12];
+		document.getElementById( "agent2" ).value = data[13];
+		document.getElementById( "client2" ).value = data[14];
 	}
     }   
     });
     //document.getElementById("height").innerHTML = height[i];
     //document.getElementById("width").innerHTML = width[i];
+  }
+  
+  function loadbrand(){
+	  
   }
 	
   </script>
@@ -276,10 +497,10 @@ function loadnextdata()
 		$_id= $_COOKIE['id'];
 	?>
 
-	<table align="center" cellspacing='5' cellpadding='5'  border='0' width="1000" frame="box" style="background-color: #ffffff;">
+	<table align="center" cellspacing='3' cellpadding='3'  border='0' width="1100" frame="box" style="background-color: #ffffff;">
  
 		<tr height="10">
-			<th width="150" rowspan="8">
+			<th width="150" rowspan="16">
         
 				<center>
 				 <div id="slide_cont">
@@ -319,9 +540,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
   $msg = '';
   $i1 = isset($_POST['input1']) ? trim($_POST['input1']) : 'Pooja';
   $i2 = isset($_POST['input2']) ? trim($_POST['input2']) : '';
-  $i3 = isset($_POST['input3']) ? trim($_POST['input3']) : '';
-  $i4 = isset($_POST['input4']) ? trim($_POST['input4']) : '';
-
+  //$i3 = isset($_POST['input3']) ? trim($_POST['input3']) : '';
+  //$i4 = isset($_POST['input4']) ? trim($_POST['input4']) : '';
+  $cat = isset($_POST['cat']) ? trim($_POST['cat']) : '';
+  $brand = isset($_POST['brand']) ? trim($_POST['brand']) : '';
+  $prod = isset($_POST['prod']) ? trim($_POST['prod']) : '';
+  $prdcat = isset($_POST['prdcat']) ? trim($_POST['prdcat']) : '';
+  $agent = isset($_POST['agent']) ? trim($_POST['agent']) : '';
+  $client = isset($_POST['client']) ? trim($_POST['client']) : '';
+  $cat2 = isset($_POST['cat2']) ? trim($_POST['cat2']) : '';
+  $brand2 = isset($_POST['brand2']) ? trim($_POST['brand2']) : '';
+  $prod2 = isset($_POST['prod2']) ? trim($_POST['prod2']) : '';
+  $prdcat2 = isset($_POST['prdcat2']) ? trim($_POST['prdcat2']) : '';
+  $agent2 = isset($_POST['agent2']) ? trim($_POST['agent2']) : '';
+  $client2 = isset($_POST['client2']) ? trim($_POST['client2']) : '';
+//echo $cat;
+//echo $agent;
   $dbhost = 'localhost';
   $dbuser = 'root';
   $dbpass = '';
@@ -338,25 +572,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     $query = 'INSERT INTO news.news2 SET ';
     $query .= ' input1 = \''.$i1.'\'';
     $query .= ' , input2 = \''.$i2.'\'';
+	$query .= ' , cat = \''.$cat.'\'';
+	$query .= ' , brand = \''.$brand.'\'';
+	$query .= ' , prod = \''.$prod.'\'';
+	$query .= ' , prdcat = \''.$prdcat.'\'';
+	$query .= ' , agent = \''.$agent.'\'';
+	$query .= ' , client = \''.$client.'\'';
+	$query .= ' , cat2 = \''.$cat2.'\'';
+	$query .= ' , brand2 = \''.$brand2.'\'';
+	$query .= ' , prod2 = \''.$prod2.'\'';
+	$query .= ' , prdcat2 = \''.$prdcat2.'\'';
+	$query .= ' , agent2 = \''.$agent2.'\'';
+	$query .= ' , client2 = \''.$client2.'\'';
     $query .= ' , input3 = \''.$i3.'\'';
     $query .= ' , input4 = \''.$i4.'\'';
     $query .= ' , filename = \''.$json[$_id].'\'';
-    $query .= ' , unique_id = '.  $uniqid;
+    $query .= ' , unique_id = "'.  $uniqid .'"';
 //echo $query;
     mysqli_query($conn, $query) or die(mysqli_error($conn));
   }
   else {
-      $query = 'UPDATE news.news2 SET ';
-      $query .= ' input1 = \''.$i1.'\'';
-      $query .= ' , input2 = \''.$i2.'\'';
-      $query .= ' , input3 = \''.$i3.'\'';
-      $query .= ' , input4 = \''.$i4.'\'';
-      $query .= ' where filename = \''.$json[$_id].'\'';
+	$query = 'UPDATE news.news2 SET ';
+	$query .= ' input1 = \''.$i1.'\'';
+	$query .= ' , input2 = \''.$i2.'\'';
+	$query .= ' , cat = \''.$cat.'\'';
+	$query .= ' , brand = \''.$brand.'\'';
+	$query .= ' , prod = \''.$prod.'\'';
+	$query .= ' , prdcat = \''.$prdcat.'\'';
+	$query .= ' , agent = \''.$agent.'\'';
+	$query .= ' , client = \''.$client.'\'';
+	$query .= ' , cat2 = \''.$cat2.'\'';
+	$query .= ' , brand2 = \''.$brand2.'\'';
+	$query .= ' , prod2 = \''.$prod2.'\'';
+	$query .= ' , prdcat2 = \''.$prdcat2.'\'';
+	$query .= ' , agent2 = \''.$agent2.'\'';
+	$query .= ' , client2 = \''.$client2.'\'';
+	$query .= ' , input3 = \''.$i3.'\'';
+	$query .= ' , input4 = \''.$i4.'\'';
+	$query .= ' where filename = \''.$json[$_id].'\'';
   //echo $query;
       mysqli_query($conn, $query) or die(mysqli_error($conn));
   }
   //echo $query;
-  mysqli_close($conn);
+  //mysqli_close($conn);
 
   //$i1 = $i2 = $i3 = $i4 = '';
   echo '<script type="text/javascript">',
@@ -369,12 +627,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 //mysqli_close($conn);
 ?>
 		
-<form name="form" action="" method="POST">
+<form name="form" action="" method="POST" autocomplete="off">
 
 	<tr height="100">
     	
 	</tr>
-
+<!---------------------------------------------------------------------------------------->
 	<tr height="10">
     	<td width="150">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -386,7 +644,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 			<input type="radio" name="input1" id="input1" value="Advertisement"> Advertisement
         </td>
 	</tr>
-
+<!---------------------------------------------------------------------------------------->
 	<tr height="10">
     	<th align="right" width="150">
         	Advertiser :
@@ -396,34 +654,161 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         </td>
 	</tr>
 
-	<tr height="10">
-    	<th align="right" width="150">
-        	Input 3 :
+<!---------------------------------------------------------------------------------------->
+	
+	<tr height=10>
+		<th align="right" width="150">
+        	Category :
         </th>
         <td width="150">
-        	<input type="text" name="input3" id="input3" size="30" value="<?php echo $i3; ?>" />
+        	<select list="cat" name="cat" id="cat" style="width:244px;" />
+				<?php echo $coption; ?>
+				<option> Other </option>
+		</select>
         </td>
 	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="cat2" id="cat2" size="20" value="<?php echo $cat2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
 
-	<tr height="10">
-    	<th align="right" width="150">
-        	Input 4 :
+	<tr height=10>
+	<th align="right" width="150">
+        	Agent :
         </th>
         <td width="150">
-        	<input type="text" name="input4" id="input4" size="30" value="<?php echo $i4; ?>" />
+		<?php
+        	if ($newspaper = "Gujarat Samachar")
+		{
+		?>
+		<select list="agent" name="agent" id="agent" style="width:244px;" />
+				<?php echo $aoption; ?>
+				<option> Other </option>
+		</select>
+		<?php
+		}
+		else
+		{
+		?>
+		<div class="autocomplete">
+        	<input type="text" name="agent" id="agent" size="30" class="form-control" placeholder="Agent" />
+		</div>
+		<?PHP
+		}
+		?>
         </td>
 	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="agent2" id="agent2" size="20" value="<?php echo $agent2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
+
+	<tr height=10>
+	<th align="right" width="150">
+        	Client :
+        </th>
+        <td width="150">
+		<?php
+        	if ($newspaper = "Gujarat Samachar")
+		{
+		?>
+        	<select list="client" name="client" id="client" style="width:244px;" />
+				<?php echo $cloption; ?>
+				<option> Other </option>
+		</select>
+		<?php
+		}
+		else
+		{
+		?>
+		<div class="autocomplete">
+        	<input type="text" name="client" id="client" size="30" class="form-control" placeholder="Client" />
+		</div>
+		<?PHP
+		}
+		?>
+        </td>
+	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="client2" id="client2" size="20" value="<?php echo $client2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
+
+	<tr height=10>
+	<th align="right" width="150">
+        	Brand Name :
+        </th>
+        <td width="150">
+			<div class="autocomplete">
+        	<input type="text" name="brand" id="brand" size="30" class="form-control" placeholder="Brand" />
+			</div>
+        </td>
+	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="brand2" id="brand2" size="20" value="<?php echo $brand2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
+
+	<tr height=10>
+	<th align="right" width="150">
+        	Product Name :
+        </th>
+        <td width="150">
+        	<input type="text" name="prod" id="prod" size="30" class="form-control" placeholder="Product Name" />
+        </td>
+	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="prod2" id="prod2" size="20" value="<?php echo $prod2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
+
+	<tr height=10>
+	<th align="right" width="150">
+        	Product Category :
+        </th>
+        <td width="150">
+        	<input type="text" name="prdcat" id="prdcat" size="30" class="form-control" placeholder="Product Category" />
+        </td>
+	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="prdcat2" id="prdcat2" size="20" value="<?php echo $prdcat2; ?>" />
+        </td>
+	</tr>
+<!---------------------------------------------------------------------------------------->
 
 	<tr height='10'>
 		<th align="center" colspan='4'>
 			<input type="submit">
 		</th>
 	</tr>
-
-	<tr height="100">
+<!---------------------------------------------------------------------------------------->
+	<tr height="10">
     	
 	</tr>
-	
+<!---------------------------------------------------------------------------------------->
 	</table>
 
 	</form>
