@@ -35,8 +35,8 @@ $_id= $_COOKIE['id'];
 
 $uniqid = $_GET['uniqid'];
 $newspaper = $_GET['newspaper'];
+//$newspaper = '"'.$newspaper.'"';
 //echo $newspaper;
-//ECHO "POOJA";
 //echo $_GET['uniqid'];
 //$_GET['uniqid'];
 $sql = "SELECT * from news.news3 WHERE unique_id='".$uniqid."'";
@@ -106,29 +106,34 @@ while($row = mysqli_fetch_array($pcresult))
 	$pcoption .= '"' .$row['pcname']. '",';
 }
 $pcoption .= ']';
+//echo $pcoption;
 
 //query to get agent & client from database
-if ($newspaper = "Gujarat Samachar")
+//echo $newspaper;
+if ($newspaper == "Gujarat Samachar")
 {
+	//echo "pooja : GS NWSPPR";
 	$aquery = "select * from news.advdata";
 	//echo $aquery;
 	$aresult = mysqli_query($conn, $aquery) or die(mysqli_error($conn));
 
-	$aoption = '';
-	$cloption = '';
+	$aoption = "'<option> Other </option>";
+	$cloption = "'<option> Other </option>";
 	while($row = mysqli_fetch_array($aresult))
 	{
-		$aoption .= '<option>'.$row['agent'].'</option>';
-		$cloption .= '<option>'.$row['client'].'</option>';
+		$aoption .= "<option> ".$row['agent']." </option>" ;
+		$cloption .= "<option> ".$row['client']." </option>" ;
 	}
+	$aoption .= "'";
+	$cloption.= "'";
 }
 else
 {
-	//agent	
+	//agent
+	//echo "else..";
 	$aquery = "select * from news.agent";
-	$aresult = mysqli_query($conn, $clquery) or die(mysqli_error($conn));
-
-	$aoption = '[Other';
+	$aresult = mysqli_query($conn, $aquery) or die(mysqli_error($conn));
+	$aoption = "['Other',";
 	while($row = mysqli_fetch_array($aresult))
 	{
 		$aoption .= '"' .$row['aname']. '",';
@@ -150,6 +155,7 @@ else
 /* //query to get client from database
 $clquery = "select * from news.client";
 $clresult = mysqli_query($conn, $clquery) or die(mysqli_error($conn));
+
 
 $cloption = '[';
 while($row = mysqli_fetch_array($clresult))
@@ -180,7 +186,9 @@ $(document).ready(function() {
 	minLength:3
   });
 
-  if ($newspaper = "Gujarat Samachar")
+var newsp = <?php echo '"'.$newspaper.'"'; ?>;
+//	alert(newsp);
+  if (newsp == "Gujarat Samachar")
   {
   }
   else
@@ -440,7 +448,7 @@ function loadnextdata()
 	dataType: 'json',                //data format      
       success: function(data)          //on recieve of reply
       {
-	alert(data);
+	//alert(data);
 	if (data == null){
 		document.getElementById( "input2" ).value = "";
 		//document.getElementById( "input3" ).value = "";
@@ -484,8 +492,25 @@ function loadnextdata()
     //document.getElementById("width").innerHTML = width[i];
   }
   
-  function loadbrand(){
-	  
+  function update_client()
+  {
+	var agent = document.getElementById( "agent" ).value;
+	var data = data;
+	$.ajax({
+		url: "agent_client.php?agent='" + agent + "'", 
+		data: data,
+		dataType: 'json',                //data format      
+		success: function(data)          //on recieve of reply
+		{
+			if (data == null)
+			{
+			}
+			else
+			{
+				document.getElementById( "client" ).value = data[3];
+			}
+ 		}   
+	    });
   }
 	
   </script>
@@ -682,12 +707,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         </th>
         <td width="150">
 		<?php
-        	if ($newspaper = "Gujarat Samachar")
+		//echo $aoption;
+        	if ($newspaper == "Gujarat Samachar")
 		{
 		?>
-		<select list="agent" name="agent" id="agent" style="width:244px;" />
+		<select list="agent" name="agent" id="agent" style="width:244px;" onchange="update_client()"/>
 				<?php echo $aoption; ?>
-				<option> Other </option>
 		</select>
 		<?php
 		}
@@ -717,12 +742,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         </th>
         <td width="150">
 		<?php
-        	if ($newspaper = "Gujarat Samachar")
+        	if ($newspaper == "Gujarat Samachar")
 		{
 		?>
         	<select list="client" name="client" id="client" style="width:244px;" />
 				<?php echo $cloption; ?>
-				<option> Other </option>
 		</select>
 		<?php
 		}

@@ -1,5 +1,8 @@
 # import the necessary packages
+print ('shape..')
+print ('ss')
 import cv2
+print ('6')
 
 class ShapeDetector:
 	def __init__(self):

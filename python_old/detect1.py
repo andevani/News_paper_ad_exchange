@@ -1,15 +1,22 @@
 # import the necessary packages
+print ('inside......')
 from shapedetector import ShapeDetector
+print ("1")
 import argparse
 import imutils
+print ('2')
 import numpy as np
 import cv2
+print ('3')
 import subprocess
 import time
+print ('4')
 import numpy as np
-
+print ('5')
 
 import mysql.connector
+
+print('inside..')
 
 cnx = mysql.connector.connect(user='root', password='',
                               host='127.0.0.1',

@@ -44,9 +44,10 @@ require_once('include-files/connection.php');
 	//upload data of file into database
 	
 	$afilename = $_FILES["advfile"]["name"];
+
 	if ($afilename)
 	{
-	$afilename_tmp = $_FILES["advfile"]["tmp_name"];
+
 	require_once('excel_reader2.php');
 	require_once('SpreadsheetReader.php');
        
@@ -62,8 +63,16 @@ require_once('include-files/connection.php');
 		echo "<br>";
 		echo "<br>";
         move_uploaded_file($_FILES['advfile']['tmp_name'], $targetPath);
+
+	//PYTHON CALLING
+	//location.href = "slideshow_python.php?uniqid=<?php echo $uniqid;
+	//python csv_modify.py $targetPath;
+	echo $targetPath;
+	$command = escapeshellcmd('/usr/bin/python3 csv_modify.py ' . $targetPath);
+	$output = shell_exec($command);
         
-        $Reader = new SpreadsheetReader($targetPath);
+
+        $Reader = new SpreadsheetReader("out_modified.csv");
         
         $sheetCount = count($Reader->sheets());
 		echo $sheetCount;
@@ -77,53 +86,53 @@ require_once('include-files/connection.php');
             foreach ($Reader as $Row)
             {
                 $agent = "";
-                if(isset($Row[0])) {
-                    $agent = mysqli_real_escape_string($conn,$Row[0]);
+                if(isset($Row[1])) {
+                    $agent = mysqli_real_escape_string($conn,$Row[1]);
                 }
                 
 				$client = "";
-                if(isset($Row[1])) {
-                    $client = mysqli_real_escape_string($conn,$Row[1]);
+                if(isset($Row[2])) {
+                    $client = mysqli_real_escape_string($conn,$Row[2]);
                 }
 				
 				$cobw = "";
-                if(isset($Row[2])) {
-                    $cobw = mysqli_real_escape_string($conn,$Row[2]);
+                if(isset($Row[3])) {
+                    $cobw = mysqli_real_escape_string($conn,$Row[3]);
                 }
 				
 				$size = "";
-                if(isset($Row[3])) {
-                    $size = mysqli_real_escape_string($conn,$Row[3]);
+                if(isset($Row[4])) {
+                    $size = mysqli_real_escape_string($conn,$Row[4]);
                 }
 				
 				$cat = "";
-                if(isset($Row[4])) {
-                    $cat = mysqli_real_escape_string($conn,$Row[4]);
+                if(isset($Row[5])) {
+                    $cat = mysqli_real_escape_string($conn,$Row[5]);
                 }
 				
 				$pdate = "";
-                if(isset($Row[5])) {
-                    $pdate = mysqli_real_escape_string($conn,$Row[5]);
+                if(isset($Row[6])) {
+                    $pdate = mysqli_real_escape_string($conn,$Row[6]);
                 }
 				
 				$ppg = "";
-                if(isset($Row[6])) {
-                    $ppg = mysqli_real_escape_string($conn,$Row[6]);
+                if(isset($Row[7])) {
+                    $ppg = mysqli_real_escape_string($conn,$Row[7]);
                 }
 				
 				$bpg = "";
-                if(isset($Row[7])) {
-                    $bpg = mysqli_real_escape_string($conn,$Row[7]);
+                if(isset($Row[8])) {
+                    $bpg = mysqli_real_escape_string($conn,$Row[8]);
                 }
 				
 				$pgno = "";
-                if(isset($Row[8])) {
-                    $pgno = mysqli_real_escape_string($conn,$Row[8]);
+                if(isset($Row[9])) {
+                    $pgno = mysqli_real_escape_string($conn,$Row[9]);
                 }
 				
 				$matter = "";
-                if(isset($Row[9])) {
-                    $matter = mysqli_real_escape_string($conn,$Row[9]);
+                if(isset($Row[10])) {
+                    $matter = mysqli_real_escape_string($conn,$Row[10]);
                 }
 				
                 if (!empty($pgno) || !empty($agent) || !empty($client)) {

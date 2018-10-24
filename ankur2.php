@@ -209,10 +209,10 @@ ajax.send("imgData="+canvasData);
 //alert (canvasData);
 var uniqid = <?php echo $uniqid; ?>;
 var newspaper = <?php echo $newspaper; ?>;
-alert(newspaper);
+//alert(newspaper);
 //var str = "slideshow_python.php?uniqid='" + uniqid + "'&pageno='"+pageno+"'";
 //alert(str)
-location.href = "slideshow_python.php?uniqid=" + uniqid + "&pageno="+newspaper;
+location.href = "slideshow_python.php?uniqid=" + uniqid + "&newspaper="+newspaper;
 }
 
 function img_undo() {

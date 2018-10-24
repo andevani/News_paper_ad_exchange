@@ -1,5 +1,8 @@
 <?php
 
+	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+	header("Cache-Control: post-check=0, pre-check=0", false);
+	header("Pragma: no-cache");
 	$dbhost = 'localhost';
 	$dbuser = 'root';
 	$dbpass = '';
@@ -138,7 +141,7 @@
 	<table border="1" align="center" cellpadding="10" cellspacing="10" frame="box" style="background-color: #ffffff;">
 	
 	<tr>
-    	<td align="center" width="500" colspan='17'>
+    	<td align="center" width="500" colspan='18'>
 			<h1 align="center">
 				Report Data
 			</h1>
@@ -161,6 +164,7 @@
 		<th>Height*Column(CC)</th>
 		<th>Advertise/News?</th>
 		<th>Advertiser</th>
+		<th>Product Category</th>
 		<th>Input 3</th>
 		<th>Input 4</th>
 	</tr>
@@ -188,7 +192,8 @@
 		//$nw = ($w<=$fact) ? $fact :((ceil($w)%$fact === 0) ? ceil($w) : round(($w+$fact/2)/$fact)*$fact);
 		//$nw = ($w<=$fact) ? $fact :((ceil($w)%$fact === 0) ? ceil($w) : round($w/$fact)*$fact);
 		
-		$column = $nw/$fact;
+		//change : 20/10/18
+		$column = round($nw/$fact);
 		
 		$hw = $nh*$nw;
 		$hc = $nh* $column;
@@ -211,6 +216,7 @@
 			echo "<td>" . $hc . "</td>";
 			echo "<td>" . $row['input1'] . "</td>";
 			echo "<td>" . $row['input2'] . "</td>";
+			echo "<td>" . $row['prdcat'] . "</td>";
 			echo "<td>" . $row['input3'] . "</td>";
 			echo "<td>" . $row['input4'] . "</td>";
 		echo "</tr>";
@@ -224,7 +230,7 @@
 		  <td> <?php echo $thw; ?></td>
 		  <td></td><td></td>
 		  <td> <?php echo $thc; ?></td>
-		  <td></td><td></td><td></td><td></td>
+		  <td></td><td></td><td></td><td></td><td></td>
 		</tr>
 	</tfoot>
 	

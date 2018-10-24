@@ -1,6 +1,9 @@
 <?php
     require_once('include-files/connection.php');
-	require_once('datepicker.php');
+    require_once('datepicker.php');
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -13,6 +16,8 @@
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="jquery-date/jquery-1.6.2.min.js"></script>
+  <script src="jquery-date/jquery-ui-1.8.16.custom.min.js"></script>
   <script>
   $( function() {
     $( "#datepicker" ).datepicker();
@@ -261,7 +266,7 @@
 			  <option> Dharmalok </option>
 			  <option> Zagmag </option>
 			  <option> Sahiyar </option>
-			</datalist>
+			</select>
 			
 			<div id="e_edition"></div>
 			
