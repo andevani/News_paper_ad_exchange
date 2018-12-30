@@ -222,7 +222,7 @@ var newsp = <?php echo '"'.$newspaper.'"'; ?>;
 		<input type="button" name="report" value="Report" onclick="parent.location='rep_flt.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="export" id="export" value="Export" onclick='export_data()'>
-		&nbsp;&nbsp;&nbsp;&nbsp;
+
 	
 		<br>
 		<br>
@@ -492,25 +492,31 @@ function loadnextdata()
     //document.getElementById("width").innerHTML = width[i];
   }
   
-  function update_client()
+  function update_agent()
   {
-	var agent = document.getElementById( "agent" ).value;
-	var data = data;
+	var client = document.getElementById( "client" ).value;
+	//var data = data;
+	var data = new Array();
+//alert(agent);
 	$.ajax({
-		url: "agent_client.php?agent='" + agent + "'", 
+		type : "POST",		
+		url: "agent_client.php?client='" + client + "'", 
 		data: data,
 		dataType: 'json',                //data format      
 		success: function(data)          //on recieve of reply
 		{
+			//alert('aNKUR');
+			//alert(data);
 			if (data == null)
 			{
 			}
 			else
 			{
-				document.getElementById( "client" ).value = data[3];
+				document.getElementById( "agent" ).value = data[2];
 			}
  		}   
 	    });
+	//alert(data);
   }
 	
   </script>
@@ -697,42 +703,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         </th>
         <td width="150">
         	<input type="text" name="cat2" id="cat2" size="20" value="<?php echo $cat2; ?>" />
-        </td>
-	</tr>
-<!---------------------------------------------------------------------------------------->
-
-	<tr height=10>
-	<th align="right" width="150">
-        	Agent :
-        </th>
-        <td width="150">
-		<?php
-		//echo $aoption;
-        	if ($newspaper == "Gujarat Samachar")
-		{
-		?>
-		<select list="agent" name="agent" id="agent" style="width:244px;" onchange="update_client()"/>
-				<?php echo $aoption; ?>
-		</select>
-		<?php
-		}
-		else
-		{
-		?>
-		<div class="autocomplete">
-        	<input type="text" name="agent" id="agent" size="30" class="form-control" placeholder="Agent" />
-		</div>
-		<?PHP
-		}
-		?>
-        </td>
-	</tr>
-	<tr height="10">
-    	<th align="right" width="150">
-        </th>
-        <td width="150">
-        	<input type="text" name="agent2" id="agent2" size="20" value="<?php echo $agent2; ?>" />
-        </td>
+        </td> 
 	</tr>
 <!---------------------------------------------------------------------------------------->
 
@@ -745,7 +716,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         	if ($newspaper == "Gujarat Samachar")
 		{
 		?>
-        	<select list="client" name="client" id="client" style="width:244px;" />
+        	<select list="client" name="client" id="client" style="width:244px;" onchange="update_agent()"/>
 				<?php echo $cloption; ?>
 		</select>
 		<?php
@@ -768,6 +739,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         	<input type="text" name="client2" id="client2" size="20" value="<?php echo $client2; ?>" />
         </td>
 	</tr>
+<!---------------------------------------------------------------------------------------->
+
+	<tr height=10>
+	<th align="right" width="150">
+        	Agent :
+        </th>
+        <td width="150">
+		<?php
+		//echo $aoption;
+        	if ($newspaper == "Gujarat Samachar")
+		{
+		?>
+		<select list="agent" name="agent" id="agent" style="width:244px;"/>
+				<?php echo $aoption; ?>
+		</select>
+		<?php
+		}
+		else
+		{
+		?>
+		<div class="autocomplete">
+        	<input type="text" name="agent" id="agent" size="30" class="form-control" placeholder="Agent" />
+		</div>
+		<?PHP
+		}
+		?>
+        </td>
+	</tr>
+	<tr height="10">
+    	<th align="right" width="150">
+        </th>
+        <td width="150">
+        	<input type="text" name="agent2" id="agent2" size="20" value="<?php echo $agent2; ?>" />
+        </td>
+	</tr>
+
 <!---------------------------------------------------------------------------------------->
 
 	<tr height=10>

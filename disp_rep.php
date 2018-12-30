@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 	header("Cache-Control: post-check=0, pre-check=0", false);
@@ -16,7 +16,7 @@
 		
 
 	$newspaper = $date = $pageno = $edition = $section = $i1 = $i2 = $i3 = $i4 = ''; 
-	$hw = $hc = $thw = $thc = $h = $w = $column = $fact = 0;
+	$hw = $hc = $thw = $thc = $h = $w = $aw = $column = $fact = 0;
 
 	$newspaper = trim($_POST['newspaper']);
 	$pageno = trim($_POST['pageno']);
@@ -176,10 +176,12 @@
 	{
 		$i=$i+1;
 		$h = $row['height'];
-		$w = $row['width'];
+		$w = $aw =  $row['width'];
+		$fact = 4;
+		if ($newspaper == 'Gujarat Samachar'){
 		$fact = (trim($row['section']) == "Main" ? 4.5 : 4);
 		$fact = (trim($row['edition']) == "MUM" ? 4 : $fact);
-		
+		}
 		$nh = round($h);
 		$w = round($w);
 		//echo $w;
@@ -194,7 +196,22 @@
 		
 		//change : 20/10/18
 		$column = round($nw/$fact);
-		
+		if ($newspaper == 'Sandesh' && $w > 30){
+		$column = 8;
+		}
+
+		if ($newspaper == 'Sandesh' && $aw < 4.7 && $aw > 4){
+		$column = 1;
+		}
+
+		if ($newspaper == 'Sandesh' && $aw < 17 && $aw > 16){
+		$column = 4;
+		}
+
+		if ($newspaper == 'Divya Bhaskar' && $w > 30){
+		$column = 8;
+		}
+
 		$hw = $nh*$nw;
 		$hc = $nh* $column;
 		$thw = $thw + $hw;

@@ -10,12 +10,6 @@ if ( !isset( $HTTP_RAW_POST_DATA ) ) $HTTP_RAW_POST_DATA =file_get_contents( 'ph
 
 //$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
 
-  $pos_uniq = strpos($imageData,"&uniqid=");
-  $uniqid = substr($imageData,$pos_uniq+8);
-  //$fp = fopen( 'ab.txt', 'wb' );
-  //fwrite( $fp, $uniqid);
-  //fclose( $fp );
-
  echo $imageData;
   // Remove the headers (data:,) part.
   // A real application should use them according to needs such as to check image type
@@ -28,8 +22,7 @@ if ( !isset( $HTTP_RAW_POST_DATA ) ) $HTTP_RAW_POST_DATA =file_get_contents( 'ph
   //echo $_POST['width'];
   // Save file. This example uses a hard coded filename for testing,
   // but a real application can specify filename in POST variable
-  $updated_a = $uniqid.'_a.png';
-  $fp = fopen( $updated_a, 'wb' );
+  $fp = fopen( 'a.png', 'wb' );
   fwrite( $fp, $unencodedData);
   fclose( $fp );
 //  echo ("completed...");

@@ -41,10 +41,8 @@ $newspaper = $_GET['newspaper']
 
     function make_base()
     {
-      var uniqid = <?php echo $uniqid; ?>;
-      var updated_b = uniqid + "_b.png";
       base_image = new Image();
-      base_image.src = updated_b;
+      base_image.src = 'b.png';
       base_image.onload = function(){
          context.drawImage(base_image, 0, 0,base_image.width,base_image.height,0,0,base_image.width,base_image.height);
        }
@@ -201,13 +199,12 @@ console.log("mouse location:", e.clientX, e.clientY)
 function img_save() {
 
   //alert ("inside image save..");
-   var uniqid = <?php echo $uniqid; ?>;
   var canvas = document.getElementById("canvas");
  var ajax = new XMLHttpRequest();
   var canvasData = canvas.toDataURL("image/png");
 ajax.open("POST","testSave.php",false);
 ajax.setRequestHeader('Content-Type', 'application/upload');
-ajax.send("imgData="+canvasData+"&uniqid="+uniqid);
+ajax.send("imgData="+canvasData);
 //ajax.send("height="+"15");
 //alert (canvasData);
 var uniqid = <?php echo $uniqid; ?>;

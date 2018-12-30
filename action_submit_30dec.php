@@ -218,7 +218,7 @@ require_once('include-files/connection.php');
 		//$command = escapeshellcmd('ls');
                 //$output = shell_exec($command);
 		//echo $output;
-		passthru('/usr/bin/python pdftoppm.py --image '.$filename.' --unique '.$unique_id,$returnval);
+		passthru('/usr/bin/python pdftoppm.py --image '.$filename,$returnval);
 		echo  "<hr/>".$returnval;
 		$command = escapeshellcmd('/usr/bin/python pdftoppm.py --image '.$filename);
 		$output = shell_exec($command);
