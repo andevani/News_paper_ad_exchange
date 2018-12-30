@@ -40,11 +40,9 @@ if args['image'].endswith('.pdf') or args['image'].endswith('.PDF'):
 	args["image"] = "a.png"
 
 reletive_area = 0
-print ("args....."+args['image'])
+#print ("args....."+args['image'])
 #image = cv2.imread(args["image"])
-##modified on 27 dec
-#image = cv2.imread('a.png')
-image = cv2.imread(args['image'])
+image = cv2.imread('a.png')
 if image is None:
         print ("zero size image")
 #image = cv2.imread()

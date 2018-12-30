@@ -19,21 +19,17 @@ class ShapeDetector:
 		approx = cv2.approxPolyDP(c, 0.05 * peri, True)
 		# if the shape is a triangle, it will have 3 vertices
 		if len(approx) == 3:
+			print ("print triangle..")
 			shape = "triangle"
-			#print ("detecting triangle")
 
-		# if the shape has 4 vertices, it is either a square or
-		# a rectangle
 		elif len(approx) == 4:
 			# compute the bounding box of the contour and use the
 			# bounding box to compute the aspect ratio
 			(x, y, w, h) = cv2.boundingRect(approx)
 			ar = w / float(h)
 
-			# a square will have an aspect ratio that is approximately
-			# equal to one, otherwise, the shape is a rectangle
-			#print ("###########ankur...w and h.."+str(w)+",,"+str(h))
-			if (w * h) > 3000 and (w * h) < 500000000:
+			print ("###########ankur...w and h.."+str(w)+",,"+str(h))
+			if (w * h) > 3000 and (w * h) < 50000000000:
 				#shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
 				shape = "square"
 				return shape, x, y, w, h

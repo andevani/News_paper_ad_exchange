@@ -7,8 +7,9 @@ import cv2
 import subprocess
 import time
 import numpy as np
-import mysql.connector
 
+
+import mysql.connector
 
 cnx = mysql.connector.connect(user='root', password='',
                               host='127.0.0.1',
@@ -40,11 +41,12 @@ if args['image'].endswith('.pdf') or args['image'].endswith('.PDF'):
 	args["image"] = "a.png"
 
 reletive_area = 0
-print ("args....."+args['image'])
+#print ("ankur..")
+# load the image and resize it to a smaller factor so that
+# the shapes can be approximated better
+#print ("args....."+args['image'])
 #image = cv2.imread(args["image"])
-##modified on 27 dec
-#image = cv2.imread('a.png')
-image = cv2.imread(args['image'])
+image = cv2.imread('a.png')
 if image is None:
         print ("zero size image")
 #image = cv2.imread()
@@ -88,8 +90,8 @@ print ("ankur..")
 img_hsv=cv2.cvtColor(resized, cv2.COLOR_BGR2HSV)
 
 # lower mask (0-10)
-lower_red = np.array([0,200,200])
-upper_red = np.array([1,255,255])
+lower_red = np.array([0,50,50])
+upper_red = np.array([10,255,255])
 mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
 
 # upper mask (170-180)
@@ -98,8 +100,7 @@ upper_red = np.array([180,255,255])
 mask1 = cv2.inRange(img_hsv, lower_red, upper_red)
 
 # join my masks
-#mask = mask0+mask1
-mask = mask0
+mask = mask0+mask1
 
 # set my output img to zero everywhere except my mask
 #output_img = image.copy()
