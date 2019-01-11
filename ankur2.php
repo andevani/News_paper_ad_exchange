@@ -3,9 +3,7 @@
 <head>
 <?php
 require_once('include-files/connection.php');
-
 $cwidth = $cheight = '';
-
 $uniqid = $_GET['uniqid'];
 $cheight = $_GET['cheight'];
 $cwidth = $_GET['cwidth'];
@@ -28,7 +26,6 @@ $newspaper = $_GET['newspaper']
 
         <canvas id="canvas" align='center'></canvas>
       <script>
-
       var canvas = document.getElementById('canvas'),
     context = canvas.getContext('2d');
 	
@@ -38,7 +35,6 @@ $newspaper = $_GET['newspaper']
     //context.canvas.height = 2.4*window.innerHeight;
 	var restorePoints = [];
     make_base();
-
     function make_base()
     {
       var uniqid = <?php echo $uniqid; ?>;
@@ -60,50 +56,39 @@ $(function(){
       startY: 0
   };
   var canv = document.createElement('canvas');
-
     var canvas=document.getElementById("canvas");
     var ctx=canvas.getContext("2d");
-
     var canvasOffset=$("#canvas").offset();
     var offsetX=canvasOffset.left;
     var offsetY=canvasOffset.top;
-
     //console.log("offset location:", offsetX, offsetY);
     var startX;
     var startY;
     var isDown=false;
-
     ctx.fillStyle="rgba(255, 0, 0, 0)";
     ctx.globalAlpha = 1;
     ctx.strokeStyle="red";
-    ctx.lineWidth=5;
-
+    ctx.lineWidth=6;
     var modeName="square";
-
     $('input[name=mode]').click(function() {
         modeName=$('input[name=mode]:checked').val();
         console.log(modeName);
     });
-
     function handleMouseDown(e){
-
       mouseX=parseInt(e.clientX-offsetX)+document.documentElement.scrollLeft;
       //mouseX=e.clientX;
       mouseY=parseInt(e.clientY-offsetY)+document.documentElement.scrollTop;
       //mouseY=e.clientY;
-
       // Put your mousedown stuff here
      startX=mouseX;
      startY=mouseY;
 //$("#downlog").html("Down: " + mouseX + " / " + mouseY);
 console.log("strtx and starty: " + startX + " / " + startY);
 console.log("mouse location:", e.clientX, e.clientY)
-
   //var rect = canvas.getBoundingClientRect();
             //startX=(e.clientX - rect.left);
             //startY=(e.clientY - rect.top) ;
             //console.log("mouse location new:",startX, startY);
-
       if (isDown == false){
         isDown=true;
         //startX=mouseX;
@@ -114,42 +99,32 @@ console.log("mouse location:", e.clientX, e.clientY)
     //  drawRectangle(mouseX,mouseY);
       }
     }
-
     function handleMouseUp(e){
       mouseX=parseInt(e.clientX-offsetX)+document.documentElement.scrollLeft;
       mouseY=parseInt(e.clientY-offsetY)+document.documentElement.scrollTop;
       $("#uplog").html("Up: "+ mouseX + " / " + mouseY);
-
       // Put your mouseup stuff here
       isDown=false;
        //$("#uplog").html("Up: " + mouseX + " / " + mouseY);
        console.log("mouse up location:", mouseX, mouseY,document.documentElement.scrollTop||document.body.scrollTop);
 	var canvas = document.getElementById("canvas");
-
       var dataURL_undo = canvas.toDataURL();
-
       console.log(dataURL_undo);
-
       restorePoints.push(dataURL_undo);
-
       drawRectangle(mouseX,mouseY);
 	//drawRectangle(mouseX,mouseY);
     }
-
     function handleMouseMove(e){
       mouseX=parseInt(e.clientX-offsetX)+document.documentElement.scrollLeft;
       mouseY=parseInt(e.clientY-offsetY)+document.documentElement.scrollTop
 ;
-
       // Put your mousemove stuff here
       if(!isDown){return;}
       //$("#movelog").html("Move: " + mouseX + " / " + mouseY);
-
       //drawRectangle(mouseX,mouseY);
     //  ctx.clearRect(startX,startY,mouseX-startX,mouseY-startY);
   //   drawRectangle(mouseX,mouseY);
 }
-
     function drawRectangle(mouseX,mouseY){
         var width=mouseX-startX;
         var height=mouseY-startY;
@@ -165,7 +140,6 @@ console.log("mouse location:", e.clientX, e.clientY)
         canvas.appendChild(element);
         canvas.style.cursor = "crosshair";
     }
-
     function drawSquare(mouseX,mouseY){
         var width=Math.abs(mouseX-startX)*(mouseX<startX?-1:1);
         var height=Math.abs(width)*(mouseY<startY?-1:1);
@@ -180,13 +154,9 @@ console.log("mouse location:", e.clientX, e.clientY)
         canvas.appendChild(element)
         canvas.style.cursor = "crosshair";
     }
-
     $("#canvas").mousedown(function(e){handleMouseDown(e);});
     $("#canvas").mousemove(function(e){handleMouseMove(e);});
     $("#canvas").mouseup(function(e){handleMouseUp(e);});
-
-
-
 }); // end $(function(){});
 </script>
 
@@ -199,7 +169,6 @@ console.log("mouse location:", e.clientX, e.clientY)
 	
 <script>
 function img_save() {
-
   //alert ("inside image save..");
    var uniqid = <?php echo $uniqid; ?>;
   var canvas = document.getElementById("canvas");
@@ -217,31 +186,15 @@ var newspaper = <?php echo $newspaper; ?>;
 //alert(str)
 location.href = "slideshow_python.php?uniqid=" + uniqid + "&newspaper="+newspaper;
 }
-
 function img_undo() {
-
 var oImg = new Image();
-
-
-
 oImg.onload = function() {
-
-
-
 var canvas = document.getElementById("canvas");
-
 var canvasContext = canvas.getContext('2d');
-
 canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-
 canvasContext.drawImage(oImg, 0, 0);
-
 }
-
-
-
 oImg.src = restorePoints.pop();
-
 }
   </script>
 

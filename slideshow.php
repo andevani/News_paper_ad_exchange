@@ -1,3 +1,13 @@
+<?php
+	
+	session_start();
+	//echo $_SESSION['uname'];
+	if(isset($_SESSION['uname']))
+	{
+		$uname = $_SESSION['uname'];
+
+?>
+
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,12 +227,30 @@ var newsp = <?php echo '"'.$newspaper.'"'; ?>;
 	
 		<br>
 		
+		<?php
+			if($uname == "admin")
+			{
+		?>
+		
 		<input type="button" name="home" id="home" value="Home" onclick="parent.location='main.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="report" value="Report" onclick="parent.location='rep_flt.php'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" name="export" id="export" value="Export" onclick='export_data()'>
+		
+		<?php
+			}
+			else
+			{
+		?>
+		
+		<input type="button" name="home" id="home" value="Home" onclick="parent.location='main.php'">
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" name="export" id="export" value="Export" onclick='export_data()'>
 
+		<?php
+			}
+		?>
 	
 		<br>
 		<br>
@@ -495,28 +523,29 @@ function loadnextdata()
   function update_agent()
   {
 	var client = document.getElementById( "client" ).value;
-	//var data = data;
-	var data = new Array();
-//alert(agent);
+	var data = data;
+	//var data = new Array();
+
 	$.ajax({
-		type : "POST",		
-		url: "agent_client.php?client='" + client + "'", 
+		//type: 'GET',
+		url: "agent_client.php?client=" + client, 
 		data: data,
 		dataType: 'json',                //data format      
+		async:false,
 		success: function(data)          //on recieve of reply
 		{
-			//alert('aNKUR');
-			//alert(data);
+			
 			if (data == null)
 			{
 			}
 			else
 			{
-				document.getElementById( "agent" ).value = data[2];
+				console.log(data[2]);
+				document.getElementById( "agent" ).value = data[2].trim();
 			}
  		}   
 	    });
-	//alert(data);
+
   }
 	
   </script>
@@ -569,7 +598,7 @@ require_once('include-files/connection.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
   $msg = '';
-  $i1 = isset($_POST['input1']) ? trim($_POST['input1']) : 'Pooja';
+  $i1 = isset($_POST['input1']) ? trim($_POST['input1']) : '';
   $i2 = isset($_POST['input2']) ? trim($_POST['input2']) : '';
   //$i3 = isset($_POST['input3']) ? trim($_POST['input3']) : '';
   //$i4 = isset($_POST['input4']) ? trim($_POST['input4']) : '';
@@ -846,3 +875,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 </body>
 </html>
+<?php
+	}
+	else
+	{
+		header("Location: index.php");
+	}
+?>

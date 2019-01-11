@@ -212,7 +212,11 @@
 		$column = 8;
 		}
 
-		$hw = $nh*$nw;
+		if ($newspaper == 'Divya Bhaskar' && $nw >= 50){
+		$nw = 52;
+		}
+
+		$hw = $nh*$w;
 		$hc = $nh* $column;
 		$thw = $thw + $hw;
 		$thc = $thc + $hc;

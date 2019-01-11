@@ -116,8 +116,9 @@ output_hsv[np.where(mask==0)] = 0
 
 blurred = cv2.cvtColor(output_hsv, cv2.COLOR_HSV2BGR)
 blurred = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-#cv2.imshow("b",blurred)
-#cv2.waitKey(11000)
+ims = cv2.resize(blurred, (960, 540))
+cv2.imshow("b",ims)
+cv2.waitKey(11000)
 # find contours in the thresholded image and initialize the
 # shape detector
 cnts = cv2.findContours(blurred.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

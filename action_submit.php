@@ -72,99 +72,35 @@ require_once('include-files/connection.php');
 	$output = shell_exec($command);
         
 
-        $Reader = new SpreadsheetReader("out_modified.csv");
+        //$Reader = new SpreadsheetReader("out_modified.csv");
         
-        $sheetCount = count($Reader->sheets());
-		echo $sheetCount;
-		echo "<br>";
-		echo "<br>";
-        
-        for($i=0;$i<$sheetCount;$i++)
+        $file = fopen("out_modified.csv", "r");
+        //$sql_data = "SELECT * FROM prod_list_1 ";
+        while (($emapData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
-            $Reader->ChangeSheet($i);
-            
-            foreach ($Reader as $Row)
-            {
-                		$cid = "";
-                if(isset($Row[1])) {
-                    $cid = mysqli_real_escape_string($conn,$Row[1]);
-                }
-
-		    		$agent = "";
-                if(isset($Row[2])) {
-                    $agent = mysqli_real_escape_string($conn,$Row[2]);
-                }
-                
-				$client = "";
-                if(isset($Row[3])) {
-                    $client = mysqli_real_escape_string($conn,$Row[3]);
-                }
-				
-				$cobw = "";
-                if(isset($Row[4])) {
-                    $cobw = mysqli_real_escape_string($conn,$Row[4]);
-                }
-				
-				$size = "";
-                if(isset($Row[5])) {
-                    $size = mysqli_real_escape_string($conn,$Row[5]);
-                }
-				
-				$cat = "";
-                if(isset($Row[6])) {
-                    $cat = mysqli_real_escape_string($conn,$Row[6]);
-                }
-				
-				$pdate = "";
-                if(isset($Row[7])) {
-                    $pdate = mysqli_real_escape_string($conn,$Row[7]);
-                }
-				
-				$ppg = "";
-                if(isset($Row[8])) {
-                    $ppg = mysqli_real_escape_string($conn,$Row[8]);
-                }
-				
-				$bpg = "";
-                if(isset($Row[9])) {
-                    $bpg = mysqli_real_escape_string($conn,$Row[9]);
-                }
-				
-				$pgno = "";
-                if(isset($Row[10])) {
-                    $pgno = mysqli_real_escape_string($conn,$Row[10]);
-                }
-				
-				$matter = "";
-                if(isset($Row[11])) {
-                    $matter = mysqli_real_escape_string($conn,$Row[11]);
-                }
-				
-                if (!empty($pgno) || !empty($agent) || !empty($client)) {
-                    $query = "insert into news.advdata(uniqueid,agent,client,cobw,size,cat,pdate,ppg,bpg,pgno,matter) values('', '".trim($cid)."','".trim($agent)."','".trim($client)."','".trim($cobw)."','".trim($size)."','".trim($cat)."','".trim($pdate)."','".trim($ppg)."','".trim($bpg)."','".trim($pgno)."')";
-					//echo $query;
-					//echo "<br>";
-					//echo "<br>";
-                    $result = mysqli_query($conn, $query);
-                
-                    if (! empty($result)) {
-                        $type = "success";
-                        $message = "Excel Data Imported into the Database";
-                    } else {
-                        $type = "error";
-                        $message = "Problem in Importing Excel Data";
-                    }
-                }
-             }
-        
-         }
-	}
+            //print_r($emapData);
+            //exit();
+            $sql = "insert into news.advdata(uniqueid,agent,client,cobw,size,cat,pdate,ppg,bpg,pgno,matter) values('$emapData[0]','$emapData[1]','$emapData[2]','$emapData[3]','$emapData[4]','$emapData[5]','$emapData[6]','$emapData[7]','$emapData[8]','$emapData[9]','$emapData[10]')";
+            $result = mysqli_query($conn, $sql);
+        }
+        fclose($file);
+        echo 'CSV File has been successfully Imported';
+	
   //}
   //else
   //{ 
    //     $type = "error";
     //    $message = "Invalid File Type. Upload Excel File.";
   //}
+	//change - 30/12/18
+	//append all data in advdata_all table
+	$query_n = "INSERT INTO news.advdata_all SELECT * FROM advdata WHERE 1";
+	$result = mysqli_query($conn, $query_n);
+	echo "<br><br>";
+	echo $query_n;
+	echo "<br><br>";
+}
+	
 	
 //========================================================================	
 	

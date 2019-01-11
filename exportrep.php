@@ -58,7 +58,7 @@
 		
 		$column = round($nw/$fact);
 		if ($newspaper == 'Sandesh' && $w > 30){
-			$column = 8;
+		$column = 8;
 		}
 
 		if ($newspaper == 'Sandesh' && $aw < 4.7 && $aw > 4){
@@ -70,7 +70,11 @@
 		}
 
 		if ($newspaper == 'Divya Bhaskar' && $w > 30){
-			$column = 8;
+		$column = 8;
+		}
+
+		if ($newspaper == 'Divya Bhaskar' && $nw >= 50){
+		$nw = 52;
 		}
 		
 		$hw = $nh*$nw;
